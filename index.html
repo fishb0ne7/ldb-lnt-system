@@ -1,273 +1,717 @@
 <!DOCTYPE html>
-<html lang="lo">
+<html lang="lo" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pnuii test</title>
-    <!-- Load Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ທພລ ສາຂາພາກຫຼວງນ້ຳທາ</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'Noto Sans Lao', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float-slow': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans Lao -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&family=Noto+Sans+Lao:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap');
-        
         body {
-            transition: background 1.5s ease-in-out;
+            font-family: 'Noto Sans Lao', 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        /* Custom scrollbar styling for search dropdown */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Safe area adjustments for notched mobile screens */
+        .safe-padding-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
         }
     </style>
 </head>
-<body id="bg-body" class="min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-zinc-900 to-black text-white font-sans transition-all duration-1000 overflow-hidden relative">
+<body class="flex flex-col min-h-screen text-slate-800 antialiased">
 
-    <!-- Decorative Ambient Glows -->
-    <div class="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none animate-pulse-slow"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
-
-    <main class="w-full max-w-2xl relative z-10 animate-float-slow">
-        <div class="glass-card rounded-3xl p-8 md:p-12 text-center flex flex-col items-center justify-center gap-6">
-            
-            <!-- Dynamic Icon Representation -->
-            <div id="greeting-icon" class="text-6xl md:text-7xl transition-all duration-700 filter drop-shadow-lg">
-                <i class="ph ph-sun-dim"></i>
-            </div>
-
-            <!-- Greeting Text -->
-            <div class="space-y-2">
-                <h1 id="greeting-title" class="text-4xl md:text-5xl font-bold tracking-normal drop-shadow-sm transition-all duration-700">
-                    ສະບາຍດີ
+    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-40 py-4 px-4">
+        <!-- Header Container with Left Text & Right Logo -->
+        <div class="max-w-xl mx-auto flex items-center justify-between gap-4">
+            <!-- Left Header Details -->
+            <div class="flex flex-col flex-1 min-w-0">
+                <h1 class="font-extrabold text-sm md:text-base tracking-tight text-slate-900 truncate">
+                    ລະບົບຕິດຕາມການປະຕິບັດວັດຖະນະທຳອົງກອນ ທພລ
                 </h1>
-                <p id="greeting-subtitle" class="text-sm md:text-base font-light tracking-wide text-white/70 max-w-sm mx-auto">
-                    ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ພື້ນທີ່ຂອງທ່ານ
+                <p id="live-clock" class="text-xs text-slate-500 font-medium mt-0.5">
+                    ກຳລັງໂຫລດເວລາ...
                 </p>
+                
+                <!-- Status Badge (Moved directly below the datetime) -->
+                <div id="header-status-badge" class="flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span id="header-status-text" class="text-[10px] font-bold tracking-wide uppercase">ເຮັດວຽກຢູ່</span>
+                </div>
+            </div>
+            
+            <!-- Right Header Logo (Replaced old Badge location) -->
+            <div class="shrink-0 flex items-center">
+                <img src="https://www.ldblao.la/_nuxt/img/LDB%20Logo_new2_1.0731bb5.png" 
+                     class="h-12 md:h-14 w-auto object-contain" 
+                     alt="LDB Logo"
+                     onerror="this.src='https://placehold.co/150x50/1191d6/ffffff?text=LDB+BANK'">
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow px-4 py-6 md:py-8 flex flex-col justify-start">
+        <div class="max-w-xl mx-auto w-full bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 p-5 md:p-8 flex flex-col gap-6">
+            
+            <!-- Connection Diagnostics Banner -->
+            <div id="error-banner" class="hidden bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start space-x-3">
+                <i class="fa-solid fa-circle-exclamation text-rose-500 text-lg mt-0.5"></i>
+                <div class="flex-1">
+                    <h4 class="font-semibold text-sm text-rose-800">ການເຊື່ອມຕໍ່ຫຼົ້ມເຫຼວ ("Failed to fetch")</h4>
+                    <p class="text-xs text-rose-600 mt-1 leading-relaxed">ການເຊື່ອມຕໍ່ຫາ Google Sheets ຖືກບລັອກ. ສິ່ງນີ້ມັກເກີດຂຶ້ນຖ້າຫາກການຕັ້ງຄ່າສິດທິໃນ Apps Script ບໍ່ຖືກຕ້ອງ ຫຼື ວາງລິ້ງຄ໌ບໍ່ຖືກ.</p>
+                </div>
             </div>
 
-            <!-- 24-Hour Digital Time Layout & Phone Display -->
-            <div class="w-full bg-black/25 rounded-2xl py-6 px-4 border border-white/5 shadow-inner space-y-4">
-                <div>
-                    <div id="time-display" class="text-4xl md:text-6xl font-mono font-medium tracking-wider text-white">
-                        00:00:00
+            <!-- Welcome Greeting Module -->
+            <div id="greeting-wrapper" class="bg-gradient-to-r from-slate-50 to-sky-50/30 rounded-2xl p-4 md:p-5 border border-slate-100">
+                <h3 id="time-greeting" class="font-bold text-lg text-slate-800">ສະບາຍດີ, ຍິນດີຕ້ອນຮັບ!</h3>
+                <p class="text-xs text-slate-500 mt-1">ກະລຸນາຕື່ມຂໍ້ມູນໃສ່ຫ້ອງລຸ່ມນີ້ເພື່ອສົ່ງຂໍ້ມູນການເຂົ້າວຽກຂອງທ່ານ.</p>
+            </div>
+
+            <!-- Main Form -->
+            <form id="checkin-form" class="space-y-6" onsubmit="handleFormSubmission(event)">
+                
+                <div class="space-y-2 relative">
+                    <label class="block text-sm font-semibold text-slate-700 flex justify-between items-center">
+                        <span>ເລືອກຊື່ຂອງທ່ານ <span class="text-rose-500">*</span></span>
+                        <span id="sync-status" class="text-xs font-normal text-[#1191d6]">ກຳລັງເຊື່ອມຕໍ່ຖານຂໍ້ມູນ...</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </span>
+                        <input type="text" id="emp-search-input" placeholder="ພີມຊື່ ຫຼື ລະຫັດພະນັກງານຂອງທ່ານເພື່ອຄົ້ນຫາ..." 
+                               class="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm font-medium" 
+                               autocomplete="off" required>
+                        <span id="clear-search" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </span>
                     </div>
-                    <div id="date-display" class="text-xs md:text-sm font-semibold tracking-wider text-white/50 uppercase mt-2">
-                        ກຳລັງໂຫລດວັນທີ...
+
+                    <!-- Hidden Input holding original emp_id -->
+                    <input type="hidden" id="emp-id-value" name="emp_id" required>
+
+                    <!-- Filtered Options List -->
+                    <div id="emp-dropdown-list" class="hidden absolute left-0 right-0 mt-1.5 max-h-60 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-y-auto custom-scroll">
+                        <div id="emp-list-container" class="py-1">
+                            <!-- Injected dynamically -->
+                        </div>
                     </div>
                 </div>
 
-                <!-- Phone number display container -->
-                <div class="pt-4 border-t border-white/10 flex flex-col items-center justify-center gap-2">
-                    <div class="text-sm font-medium text-white/80">
-                        ໝາຍເລກໂທລະສັບ: <span id="phone-value" class="font-mono text-yellow-300 font-bold transition-all">ບໍ່ທັນມີຂໍ້ມູນ</span>
+                <div id="employee-profile-card" class="hidden bg-slate-50 border border-slate-200/60 rounded-xl p-4 flex items-center justify-between transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-[#1191d6]/10 flex items-center justify-center text-[#1191d6] font-bold text-sm" id="profile-avatar">
+                            --
+                        </div>
+                        <div>
+                            <h4 id="profile-name" class="font-bold text-sm text-slate-800">---</h4>
+                            <p id="profile-details" class="text-xs text-slate-500 mt-0.5">---</p>
+                        </div>
                     </div>
-                    <button id="btn-request-phone" class="text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white/90 px-3 py-1.5 rounded-full transition-all border border-white/10 flex items-center gap-1.5">
-                        <i class="ph ph-phone"></i> <span>ຕັ້ງຄ່າເບີໂທລະສັບ</span>
-                    </button>
+                    <span class="bg-[#1191d6]/10 text-[#1191d6] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-[#1191d6]/20" id="profile-dept">
+                        ---
+                    </span>
                 </div>
-            </div>
 
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">
+                        ຖ່າຍຮູບ / ເຊວຟີ <span class="text-rose-500">*</span>
+                    </label>
+                    
+                    <div class="border-2 border-dashed border-slate-200 rounded-2xl p-2 bg-slate-50 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden group">
+                        <!-- Video stream container -->
+                        <div id="camera-stream-container" class="hidden w-full h-56 bg-black rounded-xl overflow-hidden relative">
+                            <video id="webcam-feed" autoplay playsinline muted class="w-full h-full object-cover transform -scale-x-100"></video>
+                            <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-2 px-4">
+                                <button type="button" onclick="snapPhoto()" class="bg-[#1191d6] hover:bg-[#0e7db1] active:scale-95 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>ຖ່າຍຮູບເຊວຟີ</span>
+                                </button>
+                                <button type="button" onclick="stopCameraStream()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition-all">
+                                    ຍົກເລີກ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Image Preview Element -->
+                        <div id="image-preview-container" class="hidden w-full h-56 rounded-xl overflow-hidden relative">
+                            <img id="image-preview" class="w-full h-full object-cover" src="" alt="Captured CheckIn Thumbnail">
+                            <div class="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                <button type="button" onclick="resetCaptureModule()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>ຖ່າຍຮູບໃໝ່</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Initial action selection state -->
+                        <div id="camera-placeholder" class="py-6 flex flex-col items-center justify-center text-center px-4 w-full">
+                            <div class="w-14 h-14 bg-sky-50 border border-sky-100 rounded-full flex items-center justify-center text-[#1191d6] mb-3 group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-camera-retro text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-700">ຈຳເປັນຕ້ອງມີການຖ່າຍຮູບ</h4>
+                            <p class="text-xs text-slate-400 max-w-[280px] mt-1 mb-4">ກະລຸນາໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2 w-full max-w-sm justify-center">
+                                <button type="button" onclick="startCameraStream()" class="flex-1 bg-[#1191d6] hover:bg-[#0e7db1] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-md shadow-sky-100 flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>ໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ</span>
+                                </button>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="remarks" class="block text-sm font-semibold text-slate-700 flex justify-between items-center">
+                        <span>ໝາຍເຫດ <span class="text-slate-400 font-normal">(ທາງເລືອກ)</span></span>
+                        <span id="char-counter" class="text-xs text-slate-400">0 / 120 ຕົວອັກສອນ</span>
+                    </label>
+                    <textarea id="remarks" name="remarks" maxlength="120" rows="2" placeholder="ຕົວຢ່າງ: ປະຕິບັດວຽກນອກຫ້ອງການ, ເດີນທາງປະຊຸມ, ອື່ນໆ"
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm"
+                              oninput="updateCharCounter()"></textarea>
+                </div>
+
+                <!-- Submission Button (Updated requested text string) -->
+                <button type="submit" id="btn-submit-checkin" class="w-full bg-[#1191d6] hover:bg-[#0e7db1] text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-100 transition-all hover:shadow-xl active:scale-[0.98] flex items-center justify-center space-x-2 text-sm md:text-base">
+                    <i class="fa-solid fa-clipboard-check text-lg"></i>
+                    <span>ບັນທຶກຂໍ້ມູນປະຕິບັດວັດຖະນະທຳ</span>
+                </button>
+            </form>
         </div>
     </main>
 
-    <!-- Interactive Request Phone Modal -->
-    <div id="phone-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="glass-card max-w-sm w-full rounded-3xl p-6 text-center space-y-4 scale-95 transition-transform duration-300" id="phone-modal-content">
-            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-2xl text-yellow-300">
-                <i class="ph ph-phone"></i>
+    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 bg-white safe-padding-bottom">
+        <div class="max-w-xl mx-auto px-4 flex justify-between items-center">
+            <span>ພັດທະນາໂດຍ ຂະແໜງບັນຊີ-ໄອທີ ສາຂາພາກຫຼວງນ້ຳທາ 👓</span>
+            <span class="flex items-center space-x-1">
+                <span id="pulse-dot" class="w-1.5 h-1.5 bg-[#1191d6] rounded-full inline-block animate-ping"></span> 
+                <span id="sync-text">ກຳລັງເຊື່ອມຕໍ່ລະບົບ</span>
+            </span>
+        </div>
+    </footer>
+
+    <div id="success-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center transform scale-90 transition-all duration-300">
+            <div class="w-16 h-16 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-circle-check text-3xl"></i>
             </div>
-            <h3 class="text-lg font-bold">ປ້ອນໝາຍເລກໂທລະສັບຂອງທ່ານ</h3>
-            <p class="text-xs text-white/60 leading-relaxed">
-                ເນື່ອງຈາກຄວາມປອດໄພຂອງລະບົບ, ບຣາວເຊີບໍ່ສາມາດດຶງເບີໂທໄດ້ໂດຍກົງ. ກະລຸນາປ້ອນເບີຂອງທ່ານເພື່ອບັນທຶກ ແລະ ສະແດງໃນໜ້າຈໍ.
-            </p>
-            <input type="tel" id="input-phone" placeholder="ຕົວຢ່າງ: 020 9XXXXXXX" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder-white/30 focus:outline-none focus:border-white/40 focus:ring-1 focus:ring-white/30 font-mono transition-all">
-            <div class="flex gap-2 pt-2">
-                <button id="btn-close-modal" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-sm transition-colors text-white">ຍົກເລີກ</button>
-                <button id="btn-save-phone" class="flex-1 py-2.5 bg-white text-black font-semibold hover:bg-white/90 rounded-xl text-sm transition-colors">ບັນທຶກ</button>
+            <h3 class="font-extrabold text-xl text-slate-900">ບັນທຶກການເຂົ້າວຽກສຳເລັດ!</h3>
+            <p id="success-welcome-msg" class="text-sm text-slate-500 mt-2">ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ມີຄວາມສຸກ!</p>
+            <div class="mt-6">
+                <button onclick="closeSuccessModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-all text-xs">
+                    ຕົກລົງ, ດີຫຼາຍ!
+                </button>
             </div>
         </div>
     </div>
 
+    <div id="error-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center">
+            <div class="w-14 h-14 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center text-rose-500 mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-slate-900">ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ</h3>
+            <p id="error-modal-msg" class="text-xs text-slate-500 mt-2 leading-relaxed">ເກີດຂໍ້ຜິດພາດໃນຂະນະທີ່ກຳລັງບັນທຶກການເຂົ້າວຽກຂອງທ່ານ.</p>
+            <div class="mt-5">
+                <button onclick="closeErrorModal()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs">
+                    ປິດ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="global-spinner" class="hidden fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 flex flex-col items-center justify-center text-white">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+            <div class="absolute w-12 h-12 border-4 border-white/20 rounded-full"></div>
+            <div class="absolute w-12 h-12 border-4 border-t-[#1191d6] border-r-[#1191d6] border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        </div>
+        <p id="spinner-text" class="text-xs font-semibold mt-4 tracking-wide uppercase">ກຳລັງບັນທຶກຂໍ້ມູນ</p>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const bgBody = document.getElementById('bg-body');
-            const greetingIcon = document.getElementById('greeting-icon');
-            const greetingTitle = document.getElementById('greeting-title');
-            const greetingSubtitle = document.getElementById('greeting-subtitle');
-            const timeDisplay = document.getElementById('time-display');
-            const dateDisplay = document.getElementById('date-display');
+        // =========================================================================
+        // PRODUCTION HARDCODED CONFIGURATION
+        // =========================================================================
+        // Paste your deployed Google Apps Script Web App Endpoint URL here.
+        const CONFIG_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYJTfwCXKngWD003r84IHSLTrWBj9hT1k09GMDW9QRjppgMDHg_zFI6azwjKPAQ0i7ng/exec"; 
+        // =========================================================================
+
+        // Mock roster fallback used ONLY if CONFIG_APPS_SCRIPT_URL is still a placeholder
+        const sandboxEmployees = [
+            { emp_id: "EMP101", emp_name: "Sarah Jenkins", emp_position: "Senior Designer", emp_department: "Product Design" },
+            { emp_id: "EMP102", emp_name: "David Chen", emp_position: "Software Engineer", emp_department: "Engineering" },
+            { emp_id: "EMP103", emp_name: "Jessica Alabi", emp_position: "Marketing Manager", emp_department: "Growth" },
+            { emp_id: "EMP104", emp_name: "Marcus Aurelius", emp_position: "HR Partner", emp_department: "People Ops" },
+            { emp_id: "EMP105", emp_name: "Amelia Earhart", emp_position: "Logistics Specialist", emp_department: "Operations" }
+        ];
+
+        // Active State
+        let employeesData = [];
+        let selectedEmployee = null;
+        let localStream = null;
+        let base64Image = null;
+        let isDemoMode = true;
+
+        function initLiveClock() {
+            const clockEl = document.getElementById('live-clock');
+            const greetingEl = document.getElementById('time-greeting');
             
-            // Phone DOM nodes
-            const phoneValue = document.getElementById('phone-value');
-            const btnRequestPhone = document.getElementById('btn-request-phone');
-            const phoneModal = document.getElementById('phone-modal');
-            const phoneModalContent = document.getElementById('phone-modal-content');
-            const btnCloseModal = document.getElementById('btn-close-modal');
-            const btnSavePhone = document.getElementById('btn-save-phone');
-            const inputPhone = document.getElementById('input-phone');
-
-            let currentPeriod = '';
-
-            // Clock & dynamic layouts 
-            function updateTimeAndGreeting() {
+            function tick() {
                 const now = new Date();
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-
-                // Format Time to 24h standard
-                const stringHours = hours.toString().padStart(2, '0');
-                const stringMinutes = minutes.toString().padStart(2, '0');
-                const stringSeconds = seconds.toString().padStart(2, '0');
                 
-                timeDisplay.textContent = `${stringHours}:${stringMinutes}:${stringSeconds}`;
-
-                // Format Date into local Lao standard
-                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                dateDisplay.textContent = now.toLocaleDateString('lo-LA', dateOptions);
-
-                // Check timeframe to apply specific themes
-                let targetPeriod = '';
-                if (hours >= 5 && hours < 12) {
-                    targetPeriod = 'morning';
-                } else if (hours >= 12 && hours < 17) {
-                    targetPeriod = 'afternoon';
-                } else if (hours >= 17 && hours < 21) {
-                    targetPeriod = 'evening';
+                // Format date in Lao language culture
+                const dateOptions = {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                };
+                const dateStr = now.toLocaleDateString('lo-LA', dateOptions);
+                
+                // Format 24h time format clearly
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                const timeStr = now.toLocaleTimeString('lo-LA', timeOptions);
+                
+                clockEl.textContent = `${dateStr} | ${timeStr}`;
+                
+                const hours = now.getHours();
+                if (hours < 12) {
+                    greetingEl.textContent = "ສະບາຍດີຕອນເຊົ້າ! ☀️";
+                } else if (hours < 17) {
+                    greetingEl.textContent = "ສະບາຍດີຕອນບ່າຍ! 🌤️";
                 } else {
-                    targetPeriod = 'night';
-                }
-
-                if (currentPeriod !== targetPeriod) {
-                    currentPeriod = targetPeriod;
-                    applyThemedInterface(targetPeriod);
+                    greetingEl.textContent = "ສະບາຍດີຕອນແລງ! 🌙";
                 }
             }
+            setInterval(tick, 1000);
+            tick();
+        }
 
-            // Beautiful themes for Morning, Afternoon, Evening, Night
-            function applyThemedInterface(period) {
-                let gradient = '';
-                let title = '';
-                let subtitle = '';
-                let iconHtml = '';
-
-                switch (period) {
-                    case 'morning':
-                        gradient = 'from-amber-600 via-orange-600 to-yellow-600';
-                        title = 'ສະບາຍດີຕອນເຊົ້າ';
-                        subtitle = 'ຂໍໃຫ້ເປັນເຊົ້າວັນໃໝ່ທີ່ສົດຊື່ນ, ສະຫງົບ ແລະ ມີພະລັງໃນການເຮັດວຽກ.';
-                        iconHtml = '<i class="ph ph-sun-horizon text-yellow-300 animate-pulse"></i>';
-                        break;
-                    case 'afternoon':
-                        gradient = 'from-sky-600 via-indigo-700 to-blue-600';
-                        title = 'ສະບາຍດີຕອນບ່າຍ';
-                        subtitle = 'ສູ້ໆກັບການເຮັດວຽກຕໍ່ໄປ. ຂໍໃຫ້ເປັນມື້ທີ່ດີງາມ.';
-                        iconHtml = '<i class="ph ph-sun text-yellow-200 animate-spin-slow"></i>';
-                        break;
-                    case 'evening':
-                        gradient = 'from-rose-600 via-purple-700 to-indigo-800';
-                        title = 'ສະບາຍດີຕອນແລງ';
-                        subtitle = 'ໄດ້ເວລາຜ່ອນຄາຍຄວາມເມື່ອຍລ້າ. ພັກຜ່ອນໃຫ້ສະບາຍໃຈເດີ້.';
-                        iconHtml = '<i class="ph ph-moon-stars text-indigo-200"></i>';
-                        break;
-                    case 'night':
-                    default:
-                        gradient = 'from-slate-900 via-zinc-900 to-blue-950';
-                        title = 'ນອນຫຼັບຝັນດີ';
-                        subtitle = 'ຮອດເວລາພັກຜ່ອນເຕີມພະລັງແລ້ວ. ນອນຫຼັບໃຫ້ສະບາຍ ແລະ ຝັນດີເດີ້.';
-                        iconHtml = '<i class="ph ph-moon text-blue-100"></i>';
-                        break;
-                }
-
-                bgBody.className = `min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-br ${gradient} text-white font-sans transition-all duration-1000 overflow-hidden relative`;
-                greetingTitle.textContent = title;
-                greetingSubtitle.textContent = subtitle;
-                greetingIcon.innerHTML = iconHtml;
-            }
-
-            // Phone management mechanics
-            function loadPhoneNumber() {
-                const storedNumber = localStorage.getItem('pnuii_stored_phone');
-                if (storedNumber) {
-                    phoneValue.textContent = storedNumber;
-                    btnRequestPhone.innerHTML = '<i class="ph ph-pencil-simple"></i> <span>ແກ້ໄຂເບີໂທ</span>';
-                } else {
-                    phoneValue.textContent = 'ບໍ່ທັນມີຂໍ້ມູນ';
-                    btnRequestPhone.innerHTML = '<i class="ph ph-phone"></i> <span>ຕັ້ງຄ່າເບີໂທລະສັບ</span>';
-                }
-            }
-
-            function openPhoneModal() {
-                const currentNum = localStorage.getItem('pnuii_stored_phone') || '';
-                inputPhone.value = currentNum;
-                phoneModal.classList.remove('hidden');
-                setTimeout(() => {
-                    phoneModal.classList.remove('opacity-0');
-                    phoneModalContent.classList.remove('scale-95');
-                }, 10);
-            }
-
-            function closePhoneModal() {
-                phoneModal.classList.add('opacity-0');
-                phoneModalContent.classList.add('scale-95');
-                setTimeout(() => {
-                    phoneModal.classList.add('hidden');
-                }, 300);
-            }
-
-            btnRequestPhone.addEventListener('click', openPhoneModal);
-            btnCloseModal.addEventListener('click', closePhoneModal);
+        // DOM Initializer
+        window.addEventListener('DOMContentLoaded', () => {
+            initLiveClock();
+            checkSystemConfiguration();
+            setupSearchDropdownLogic();
             
-            btnSavePhone.addEventListener('click', () => {
-                const enteredNum = inputPhone.value.trim();
-                if (enteredNum) {
-                    localStorage.setItem('pnuii_stored_phone', enteredNum);
-                } else {
-                    localStorage.removeItem('pnuii_stored_phone');
-                }
-                loadPhoneNumber();
-                closePhoneModal();
-            });
-
-            // Close modal when clicking on backdrop
-            phoneModal.addEventListener('click', (e) => {
-                if (e.target === phoneModal) {
-                    closePhoneModal();
+            // Dropdown click-outside dismiss handler
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('emp-dropdown-list');
+                const searchInput = document.getElementById('emp-search-input');
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
                 }
             });
-
-            // Initialize clock engine & load cached values
-            updateTimeAndGreeting();
-            setInterval(updateTimeAndGreeting, 1000);
-            loadPhoneNumber();
         });
+
+        function checkSystemConfiguration() {
+            const syncStatus = document.getElementById('sync-status');
+            const syncText = document.getElementById('sync-text');
+            const pulseDot = document.getElementById('pulse-dot');
+            const hStatus = document.getElementById('header-status-text');
+            const hBadge = document.getElementById('header-status-badge');
+
+            if (CONFIG_APPS_SCRIPT_URL && CONFIG_APPS_SCRIPT_URL !== "YOUR_APPS_SCRIPT_URL_HERE" && CONFIG_APPS_SCRIPT_URL.trim() !== '') {
+                isDemoMode = false;
+                syncStatus.textContent = "ກຳລັງເຊື່ອມຕໍ່ຫາຖານຂໍ້ມູນ...";
+                syncText.textContent = "ເປີດໃຊ້ງານລະບົບອອນລາຍ";
+                hStatus.textContent = "ເຊື່ອມຕໍ່ແລ້ວ";
+                hBadge.className = "flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0";
+                fetchEmployeesDirectory();
+            } else {
+                // Run in simulated sandbox fallback for testing
+                isDemoMode = true;
+                employeesData = [...sandboxEmployees];
+                syncStatus.textContent = "ກຳລັງໃຊ້ລາຍຊື່ຈຳລອງ";
+                syncStatus.className = "text-xs font-normal text-amber-600";
+                syncText.textContent = "ລະບົບຈຳລອງທົດລອງ";
+                pulseDot.className = "w-1.5 h-1.5 bg-amber-500 rounded-full inline-block animate-ping";
+                hStatus.textContent = "ລະບົບຈຳລອງ";
+                hBadge.className = "flex items-center space-x-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-xl border border-amber-100 self-start mt-2 shrink-0";
+            }
+        }
+
+        async function fetchEmployeesDirectory() {
+            const syncStatus = document.getElementById('sync-status');
+            const syncText = document.getElementById('sync-text');
+            const pulseDot = document.getElementById('pulse-dot');
+            const errorBanner = document.getElementById('error-banner');
+            
+            try {
+                const targetUrl = `${CONFIG_APPS_SCRIPT_URL}?action=getEmployees`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 12000); 
+                
+                const response = await fetch(targetUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    employeesData = result.data;
+                    errorBanner.classList.add('hidden');
+                    syncStatus.textContent = `ໂຫລດຂໍ້ມູນພະນັກງານແລ້ວ ${employeesData.length} ຄົນ`;
+                    syncStatus.className = "text-xs font-semibold text-emerald-600";
+                    syncText.textContent = "ເຊື່ອມຕໍ່ຖານຂໍ້ມູນແລ້ວ";
+                    pulseDot.className = "w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block";
+                } else {
+                    throw new Error(result.message || "Failed pulling roster");
+                }
+            } catch (err) {
+                console.error("API Fetch Directory Error: ", err);
+                // Fallback gracefully so employees are never stranded on site
+                employeesData = [...sandboxEmployees];
+                errorBanner.classList.remove('hidden');
+                syncStatus.textContent = "ກຳລັງໃຊ້ລະບົບອອບລາຍ";
+                syncStatus.className = "text-xs font-normal text-rose-500";
+                syncText.textContent = "ພົບບັນຫາໃນການເຊື່ອມຕໍ່";
+                pulseDot.className = "w-1.5 h-1.5 bg-rose-500 rounded-full inline-block animate-pulse";
+            }
+        }
+
+        function setupSearchDropdownLogic() {
+            const searchInput = document.getElementById('emp-search-input');
+            const dropdown = document.getElementById('emp-dropdown-list');
+            const clearBtn = document.getElementById('clear-search');
+            
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                renderFilteredDropdown(query);
+                
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            });
+            
+            searchInput.addEventListener('focus', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                renderFilteredDropdown(query);
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearBtn.classList.add('hidden');
+                dropdown.classList.add('hidden');
+                resetEmployeeProfile();
+                searchInput.focus();
+            });
+        }
+
+        function renderFilteredDropdown(query = '') {
+            const dropdown = document.getElementById('emp-dropdown-list');
+            const listContainer = document.getElementById('emp-list-container');
+            
+            listContainer.innerHTML = '';
+            
+            const filtered = employeesData.filter(emp => {
+                const nameMatch = (emp.emp_name || '').toLowerCase().includes(query);
+                const idMatch = (emp.emp_id || '').toLowerCase().includes(query);
+                const deptMatch = (emp.emp_department || '').toLowerCase().includes(query);
+                return nameMatch || idMatch || deptMatch;
+            });
+            
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="px-4 py-3 text-xs text-slate-400 text-center">
+                        <i class="fa-solid fa-users-slash text-base mb-1 block"></i>
+                        ບໍ່ພົບຂໍ້ມູນພະນັກງານທີ່ກົງກັນ
+                    </div>
+                `;
+            } else {
+                filtered.forEach(emp => {
+                    const option = document.createElement('div');
+                    option.className = "px-4 py-3 hover:bg-[#1191d6]/10 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col transition-all";
+                    option.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">${emp.emp_name}</span>
+                            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-500">${emp.emp_id}</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-1 text-xs text-slate-400">
+                            <span>${emp.emp_position}</span>
+                            <span class="text-[10px] text-[#1191d6] font-semibold">${emp.emp_department}</span>
+                        </div>
+                    `;
+                    option.addEventListener('click', () => {
+                        selectEmployee(emp);
+                    });
+                    listContainer.appendChild(option);
+                });
+            }
+            
+            dropdown.classList.remove('hidden');
+        }
+
+        function selectEmployee(emp) {
+            selectedEmployee = emp;
+            
+            document.getElementById('emp-search-input').value = emp.emp_name;
+            document.getElementById('emp-id-value').value = emp.emp_id;
+            document.getElementById('clear-search').classList.remove('hidden');
+            document.getElementById('emp-dropdown-list').classList.add('hidden');
+            
+            document.getElementById('profile-name').textContent = emp.emp_name;
+            document.getElementById('profile-details').textContent = `${emp.emp_position} (${emp.emp_id})`;
+            document.getElementById('profile-dept').textContent = emp.emp_department;
+            
+            const initials = emp.emp_name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initials;
+            
+            document.getElementById('employee-profile-card').classList.remove('hidden');
+        }
+
+        function resetEmployeeProfile() {
+            selectedEmployee = null;
+            document.getElementById('emp-id-value').value = '';
+            document.getElementById('employee-profile-card').classList.add('hidden');
+        }
+
+        async function startCameraStream() {
+            const container = document.getElementById('camera-stream-container');
+            const placeholder = document.getElementById('camera-placeholder');
+            const video = document.getElementById('webcam-feed');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToastError("ອຸປະກອນຂອງທ່ານບໍ່ຮອງຮັບກ້ອງຖ່າຍຮູບ. ກະລຸນາລອງໃຊ້ເຄື່ອງອື່ນ ຫຼື ປຸ່ມຈຳລອງ.");
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user" },
+                    audio: false
+                });
+                
+                localStream = stream;
+                video.srcObject = stream;
+                
+                placeholder.classList.add('hidden');
+                container.classList.remove('hidden');
+            } catch (err) {
+                console.warn("Camera blocks caught: ", err);
+                showToastError("ບໍ່ສາມາດເປີດກ້ອງຖ່າຍຮູບໄດ້. ກະລຸນາກວດສອບສິດການເຂົ້າເຖິງກ້ອງ ຫຼື ກົດ 'ຈຳລອງການຖ່າຍຮູບ'.");
+            }
+        }
+
+        function stopCameraStream() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            document.getElementById('camera-stream-container').classList.add('hidden');
+            document.getElementById('camera-placeholder').classList.remove('hidden');
+        }
+
+        function snapPhoto() {
+            const video = document.getElementById('webcam-feed');
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror selfie
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            base64Image = canvas.toDataURL('image/jpeg', 0.85);
+            previewImg.src = base64Image;
+            
+            stopCameraStream();
+            document.getElementById('camera-placeholder').classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+        }
+
+        function generateSimulatedSelfie() {
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            const placeholder = document.getElementById('camera-placeholder');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+            
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#1191d6');
+            gradient.addColorStop(1, '#0c6fa4');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(320, 200, 75, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.ellipse(320, 395, 165, 115, 0, 0, Math.PI, true);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 24px Noto Sans Lao, sans-serif';
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText('ຮູບຈຳລອງການເຂົ້າວຽກ', 320, 425);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '15px monospace';
+            ctx.fillText(new Date().toISOString(), 320, 452);
+
+            base64Image = canvas.toDataURL('image/jpeg');
+            previewImg.src = base64Image;
+            
+            placeholder.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+        }
+
+        function resetCaptureModule() {
+            base64Image = null;
+            document.getElementById('image-preview').src = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('camera-placeholder').classList.remove('hidden');
+        }
+
+        function updateCharCounter() {
+            const textarea = document.getElementById('remarks');
+            const counter = document.getElementById('char-counter');
+            const currentLength = textarea.value.length;
+            counter.textContent = `${currentLength} / 120 ຕົວອັກສອນ`;
+        }
+
+        async function handleFormSubmission(event) {
+            event.preventDefault();
+            
+            const spinner = document.getElementById('global-spinner');
+            const spinnerTxt = document.getElementById('spinner-text');
+            
+            if (!selectedEmployee) {
+                showToastError("ກະລຸນາເລືອກຊື່ພະນັກງານຂອງທ່ານກ່ອນສົ່ງຂໍ້ມູນ.");
+                return;
+            }
+            
+            if (!base64Image) {
+                showToastError("ກະລຸນາຖ່າຍຮູບເຂົ້າວຽກເພື່ອດຳເນີນການຕໍ່.");
+                return;
+            }
+            
+            // Sandbox Demo Scenario Intercept
+            if (isDemoMode) {
+                spinnerTxt.textContent = "ກຳລັງປະມວນຜົນການສົ່ງແບບຈຳລອງ...";
+                spinner.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    spinner.classList.add('hidden');
+                    document.getElementById('success-welcome-msg').textContent = `ຍິນດີຕ້ອນຮັບ, ${selectedEmployee.emp_name}! (ບັນທຶກຂໍ້ມູນການເຂົ້າວຽກໃນໂໝດຈຳລອງສຳເລັດແລ້ວ)`;
+                    showSuccessModal();
+                    resetFormEntirely();
+                }, 1200);
+                return;
+            }
+            
+            // Real Sheets Integration Service Dispatch
+            const payload = {
+                action: 'submitArrivalLog',
+                emp_id: selectedEmployee.emp_id,
+                attached_image: base64Image,
+                remarks: document.getElementById('remarks').value.trim()
+            };
+            
+            spinnerTxt.textContent = "ກຳລັງບັນທຶກຂໍ້ມູນລົງໃນ Google Sheets...";
+            spinner.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(CONFIG_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                spinner.classList.add('hidden');
+                
+                if (result.status === 'success') {
+                    document.getElementById('success-welcome-msg').textContent = `ຍິນດີຕ້ອນຮັບ, ${result.employee_name}! ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ປອດໄພ!`;
+                    showSuccessModal();
+                    resetFormEntirely();
+                } else {
+                    showToastError(result.message || "ເກີດຂໍ້ຜິດພາດໃນການຕັ້ງຄ່າຖານຂໍ້ມູນ.");
+                }
+            } catch (err) {
+                spinner.classList.add('hidden');
+                console.error("Transmission Error: ", err);
+                showToastError("ການເຊື່ອມຕໍ່ຖານຂໍ້ມູນຫຼົ້ມເຫຼວ. ກະລຸນາກວດສອບສິດໃນ Apps Script ຄືນໃໝ່.");
+            }
+        }
+
+        function resetFormEntirely() {
+            document.getElementById('checkin-form').reset();
+            resetEmployeeProfile();
+            resetCaptureModule();
+            document.getElementById('emp-search-input').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            updateCharCounter();
+        }
+
+        function showSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('hidden');
+            modal.querySelector('div').classList.remove('scale-90');
+            modal.querySelector('div').classList.add('scale-100');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        function showToastError(message) {
+            const modal = document.getElementById('error-modal');
+            document.getElementById('error-modal-msg').textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
