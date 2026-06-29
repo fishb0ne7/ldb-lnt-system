@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pnuii test</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Lao', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float-slow': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            transition: background 1.5s ease-in-out;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body id="bg-body" class="min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-zinc-900 to-black text-white font-sans transition-all duration-1000 overflow-hidden relative">
+
+    <!-- Decorative Ambient Glows -->
+    <div class="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none animate-pulse-slow"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+    <main class="w-full max-w-2xl relative z-10 animate-float-slow">
+        <div class="glass-card rounded-3xl p-8 md:p-12 text-center flex flex-col items-center justify-center gap-6">
+            
+            <!-- Dynamic Icon Representation -->
+            <div id="greeting-icon" class="text-6xl md:text-7xl transition-all duration-700 filter drop-shadow-lg">
+                <i class="ph ph-sun-dim"></i>
+            </div>
+
+            <!-- Greeting Text -->
+            <div class="space-y-2">
+                <h1 id="greeting-title" class="text-4xl md:text-5xl font-bold tracking-normal drop-shadow-sm transition-all duration-700">
+                    ສະບາຍດີ
+                </h1>
+                <p id="greeting-subtitle" class="text-sm md:text-base font-light tracking-wide text-white/70 max-w-sm mx-auto">
+                    ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ພື້ນທີ່ຂອງທ່ານ
+                </p>
+            </div>
+
+            <!-- 24-Hour Digital Time Layout & Phone Display -->
+            <div class="w-full bg-black/25 rounded-2xl py-6 px-4 border border-white/5 shadow-inner space-y-4">
+                <div>
+                    <div id="time-display" class="text-4xl md:text-6xl font-mono font-medium tracking-wider text-white">
+                        00:00:00
+                    </div>
+                    <div id="date-display" class="text-xs md:text-sm font-semibold tracking-wider text-white/50 uppercase mt-2">
+                        ກຳລັງໂຫລດວັນທີ...
+                    </div>
+                </div>
+
+                <!-- Phone number display container -->
+                <div class="pt-4 border-t border-white/10 flex flex-col items-center justify-center gap-2">
+                    <div class="text-sm font-medium text-white/80">
+                        ໝາຍເລກໂທລະສັບ: <span id="phone-value" class="font-mono text-yellow-300 font-bold transition-all">ບໍ່ທັນມີຂໍ້ມູນ</span>
+                    </div>
+                    <button id="btn-request-phone" class="text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white/90 px-3 py-1.5 rounded-full transition-all border border-white/10 flex items-center gap-1.5">
+                        <i class="ph ph-phone"></i> <span>ຕັ້ງຄ່າເບີໂທລະສັບ</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Interactive Request Phone Modal -->
+    <div id="phone-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-card max-w-sm w-full rounded-3xl p-6 text-center space-y-4 scale-95 transition-transform duration-300" id="phone-modal-content">
+            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-2xl text-yellow-300">
+                <i class="ph ph-phone"></i>
+            </div>
+            <h3 class="text-lg font-bold">ປ້ອນໝາຍເລກໂທລະສັບຂອງທ່ານ</h3>
+            <p class="text-xs text-white/60 leading-relaxed">
+                ເນື່ອງຈາກຄວາມປອດໄພຂອງລະບົບ, ບຣາວເຊີບໍ່ສາມາດດຶງເບີໂທໄດ້ໂດຍກົງ. ກະລຸນາປ້ອນເບີຂອງທ່ານເພື່ອບັນທຶກ ແລະ ສະແດງໃນໜ້າຈໍ.
+            </p>
+            <input type="tel" id="input-phone" placeholder="ຕົວຢ່າງ: 020 9XXXXXXX" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder-white/30 focus:outline-none focus:border-white/40 focus:ring-1 focus:ring-white/30 font-mono transition-all">
+            <div class="flex gap-2 pt-2">
+                <button id="btn-close-modal" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-sm transition-colors text-white">ຍົກເລີກ</button>
+                <button id="btn-save-phone" class="flex-1 py-2.5 bg-white text-black font-semibold hover:bg-white/90 rounded-xl text-sm transition-colors">ບັນທຶກ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bgBody = document.getElementById('bg-body');
+            const greetingIcon = document.getElementById('greeting-icon');
+            const greetingTitle = document.getElementById('greeting-title');
+            const greetingSubtitle = document.getElementById('greeting-subtitle');
+            const timeDisplay = document.getElementById('time-display');
+            const dateDisplay = document.getElementById('date-display');
+            
+            // Phone DOM nodes
+            const phoneValue = document.getElementById('phone-value');
+            const btnRequestPhone = document.getElementById('btn-request-phone');
+            const phoneModal = document.getElementById('phone-modal');
+            const phoneModalContent = document.getElementById('phone-modal-content');
+            const btnCloseModal = document.getElementById('btn-close-modal');
+            const btnSavePhone = document.getElementById('btn-save-phone');
+            const inputPhone = document.getElementById('input-phone');
+
+            let currentPeriod = '';
+
+            // Clock & dynamic layouts 
+            function updateTimeAndGreeting() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+
+                // Format Time to 24h standard
+                const stringHours = hours.toString().padStart(2, '0');
+                const stringMinutes = minutes.toString().padStart(2, '0');
+                const stringSeconds = seconds.toString().padStart(2, '0');
+                
+                timeDisplay.textContent = `${stringHours}:${stringMinutes}:${stringSeconds}`;
+
+                // Format Date into local Lao standard
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateDisplay.textContent = now.toLocaleDateString('lo-LA', dateOptions);
+
+                // Check timeframe to apply specific themes
+                let targetPeriod = '';
+                if (hours >= 5 && hours < 12) {
+                    targetPeriod = 'morning';
+                } else if (hours >= 12 && hours < 17) {
+                    targetPeriod = 'afternoon';
+                } else if (hours >= 17 && hours < 21) {
+                    targetPeriod = 'evening';
+                } else {
+                    targetPeriod = 'night';
+                }
+
+                if (currentPeriod !== targetPeriod) {
+                    currentPeriod = targetPeriod;
+                    applyThemedInterface(targetPeriod);
+                }
+            }
+
+            // Beautiful themes for Morning, Afternoon, Evening, Night
+            function applyThemedInterface(period) {
+                let gradient = '';
+                let title = '';
+                let subtitle = '';
+                let iconHtml = '';
+
+                switch (period) {
+                    case 'morning':
+                        gradient = 'from-amber-600 via-orange-600 to-yellow-600';
+                        title = 'ສະບາຍດີຕອນເຊົ້າ';
+                        subtitle = 'ຂໍໃຫ້ເປັນເຊົ້າວັນໃໝ່ທີ່ສົດຊື່ນ, ສະຫງົບ ແລະ ມີພະລັງໃນການເຮັດວຽກ.';
+                        iconHtml = '<i class="ph ph-sun-horizon text-yellow-300 animate-pulse"></i>';
+                        break;
+                    case 'afternoon':
+                        gradient = 'from-sky-600 via-indigo-700 to-blue-600';
+                        title = 'ສະບາຍດີຕອນບ່າຍ';
+                        subtitle = 'ສູ້ໆກັບການເຮັດວຽກຕໍ່ໄປ. ຂໍໃຫ້ເປັນມື້ທີ່ດີງາມ.';
+                        iconHtml = '<i class="ph ph-sun text-yellow-200 animate-spin-slow"></i>';
+                        break;
+                    case 'evening':
+                        gradient = 'from-rose-600 via-purple-700 to-indigo-800';
+                        title = 'ສະບາຍດີຕອນແລງ';
+                        subtitle = 'ໄດ້ເວລາຜ່ອນຄາຍຄວາມເມື່ອຍລ້າ. ພັກຜ່ອນໃຫ້ສະບາຍໃຈເດີ້.';
+                        iconHtml = '<i class="ph ph-moon-stars text-indigo-200"></i>';
+                        break;
+                    case 'night':
+                    default:
+                        gradient = 'from-slate-900 via-zinc-900 to-blue-950';
+                        title = 'ນອນຫຼັບຝັນດີ';
+                        subtitle = 'ຮອດເວລາພັກຜ່ອນເຕີມພະລັງແລ້ວ. ນອນຫຼັບໃຫ້ສະບາຍ ແລະ ຝັນດີເດີ້.';
+                        iconHtml = '<i class="ph ph-moon text-blue-100"></i>';
+                        break;
+                }
+
+                bgBody.className = `min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-br ${gradient} text-white font-sans transition-all duration-1000 overflow-hidden relative`;
+                greetingTitle.textContent = title;
+                greetingSubtitle.textContent = subtitle;
+                greetingIcon.innerHTML = iconHtml;
+            }
+
+            // Phone management mechanics
+            function loadPhoneNumber() {
+                const storedNumber = localStorage.getItem('pnuii_stored_phone');
+                if (storedNumber) {
+                    phoneValue.textContent = storedNumber;
+                    btnRequestPhone.innerHTML = '<i class="ph ph-pencil-simple"></i> <span>ແກ້ໄຂເບີໂທ</span>';
+                } else {
+                    phoneValue.textContent = 'ບໍ່ທັນມີຂໍ້ມູນ';
+                    btnRequestPhone.innerHTML = '<i class="ph ph-phone"></i> <span>ຕັ້ງຄ່າເບີໂທລະສັບ</span>';
+                }
+            }
+
+            function openPhoneModal() {
+                const currentNum = localStorage.getItem('pnuii_stored_phone') || '';
+                inputPhone.value = currentNum;
+                phoneModal.classList.remove('hidden');
+                setTimeout(() => {
+                    phoneModal.classList.remove('opacity-0');
+                    phoneModalContent.classList.remove('scale-95');
+                }, 10);
+            }
+
+            function closePhoneModal() {
+                phoneModal.classList.add('opacity-0');
+                phoneModalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    phoneModal.classList.add('hidden');
+                }, 300);
+            }
+
+            btnRequestPhone.addEventListener('click', openPhoneModal);
+            btnCloseModal.addEventListener('click', closePhoneModal);
+            
+            btnSavePhone.addEventListener('click', () => {
+                const enteredNum = inputPhone.value.trim();
+                if (enteredNum) {
+                    localStorage.setItem('pnuii_stored_phone', enteredNum);
+                } else {
+                    localStorage.removeItem('pnuii_stored_phone');
+                }
+                loadPhoneNumber();
+                closePhoneModal();
+            });
+
+            // Close modal when clicking on backdrop
+            phoneModal.addEventListener('click', (e) => {
+                if (e.target === phoneModal) {
+                    closePhoneModal();
+                }
+            });
+
+            // Initialize clock engine & load cached values
+            updateTimeAndGreeting();
+            setInterval(updateTimeAndGreeting, 1000);
+            loadPhoneNumber();
+        });
+    </script>
+</body>
+</html>
