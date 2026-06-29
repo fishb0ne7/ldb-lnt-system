@@ -86,7 +86,7 @@
             <!-- Welcome Greeting Module -->
             <div id="greeting-wrapper" class="bg-gradient-to-r from-slate-50 to-sky-50/30 rounded-2xl p-4 md:p-5 border border-slate-100">
                 <h3 id="time-greeting" class="font-bold text-lg text-slate-800">ສະບາຍດີ, ຍິນດີຕ້ອນຮັບ!</h3>
-                <p class="text-xs text-slate-500 mt-1">ກະລຸນາຕື່ມຂໍ້ມູນໃສ່ຫ້ອງລຸ່ມນີ້ເພື່ອສົ່ງຂໍ້ມູນການເຂົ້າວຽກຂອງທ່ານ.</p>
+                <p class="text-xs text-slate-500 mt-1">ກະລຸນາຕື່ມຂໍ້ມູນໃສ່ຫ້ອງລຸ່ມນີ້ເພື່ອບັນທຶກການປະຕິບັດວັດຖະນະທຳຂອງອົງກອນ.</p>
             </div>
 
             <!-- Main Form -->
@@ -101,7 +101,7 @@
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-solid fa-user-tag"></i>
                         </span>
-                        <input type="text" id="emp-search-input" placeholder="ພີມຊື່ ຫຼື ລະຫັດພະນັກງານຂອງທ່ານເພື່ອຄົ້ນຫາ..." 
+                        <input type="text" id="emp-search-input" placeholder="ພິມຊື່ ຫຼື ລະຫັດພະນັກງານຂອງທ່ານເພື່ອຄົ້ນຫາ..." 
                                class="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm font-medium" 
                                autocomplete="off" required>
                         <span id="clear-search" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-400 hover:text-slate-600">
@@ -179,7 +179,7 @@
                                     <i class="fa-solid fa-video"></i>
                                     <span>ໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ</span>
                                 </button>
-                               
+                                
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                         <span>ໝາຍເຫດ <span class="text-slate-400 font-normal">(ທາງເລືອກ)</span></span>
                         <span id="char-counter" class="text-xs text-slate-400">0 / 120 ຕົວອັກສອນ</span>
                     </label>
-                    <textarea id="remarks" name="remarks" maxlength="120" rows="2" placeholder="ຕົວຢ່າງ: ປະຕິບັດວຽກນອກຫ້ອງການ, ເດີນທາງປະຊຸມ, ອື່ນໆ"
+                    <textarea id="remarks" name="remarks" maxlength="120" rows="2" placeholder="ຕົວຢ່າງ: ປະຕິບັດວຽກນອກສະຖານທີ່, ເດີນທາງປະຊຸມຕ່າງແຂວງ ແລະ ອື່ນໆ..."
                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm"
                               oninput="updateCharCounter()"></textarea>
                 </div>
@@ -206,7 +206,7 @@
 
     <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 bg-white safe-padding-bottom">
         <div class="max-w-xl mx-auto px-4 flex justify-between items-center">
-            <span>ພັດທະນາໂດຍ ຂະແໜງບັນຊີ-ໄອທີ ສາຂາພາກຫຼວງນ້ຳທາ 👓</span>
+            <span>ພັດທະນາໂດຍ ຂະແໜງບັນຊີ-ໄອທີ ສາຂາພາກຫຼວງນ້ຳທາ </span>
             <span class="flex items-center space-x-1">
                 <span id="pulse-dot" class="w-1.5 h-1.5 bg-[#1191d6] rounded-full inline-block animate-ping"></span> 
                 <span id="sync-text">ກຳລັງເຊື່ອມຕໍ່ລະບົບ</span>
@@ -249,7 +249,7 @@
             <div class="absolute w-12 h-12 border-4 border-white/20 rounded-full"></div>
             <div class="absolute w-12 h-12 border-4 border-t-[#1191d6] border-r-[#1191d6] border-b-transparent border-l-transparent rounded-full animate-spin"></div>
         </div>
-        <p id="spinner-text" class="text-xs font-semibold mt-4 tracking-wide uppercase">ກຳລັງບັນທຶກຂໍ້ມູນ</p>
+        <p id="spinner-text" class="text-xs font-semibold mt-4 tracking-wide uppercase">ກຳລັງບັນທຶກຂໍ້ມູນ...</p>
     </div>
 
     <script>
@@ -257,7 +257,7 @@
         // PRODUCTION HARDCODED CONFIGURATION
         // =========================================================================
         // Paste your deployed Google Apps Script Web App Endpoint URL here.
-        const CONFIG_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYJTfwCXKngWD003r84IHSLTrWBj9hT1k09GMDW9QRjppgMDHg_zFI6azwjKPAQ0i7ng/exec"; 
+        const CONFIG_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1n2-6xwSRvg1w0oA3ri1YYT_8VGBkBnpGOpzntQeLcFiqWTx0bJfVJ1fkIu65UDZXvQ/exec"; 
         // =========================================================================
 
         // Mock roster fallback used ONLY if CONFIG_APPS_SCRIPT_URL is still a placeholder
