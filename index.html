@@ -1,1005 +1,682 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="lo" class="h-full bg-slate-50">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ທພລ ສາຂາພາກຫຼວງນ້ຳທາ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Inter & Noto Sans Lao -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Lao:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Lao:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-      body {
-        font-family: "Noto Sans Lao", "Inter", sans-serif;
-        -webkit-tap-highlight-color: transparent;
-      }
-      /* Custom scrollbar styling for search dropdown */
-      .custom-scroll::-webkit-scrollbar {
-        width: 6px;
-      }
-      .custom-scroll::-webkit-scrollbar-track {
-        background: #f1f5f9;
-      }
-      .custom-scroll::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      .custom-scroll::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-      /* Safe area adjustments for notched mobile screens */
-      .safe-padding-bottom {
-        padding-bottom: env(safe-area-inset-bottom, 16px);
-      }
-
-      /* ===== Camera Switch Button (top-right of video) ===== */
-      .switch-btn {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.45);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        z-index: 10;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-      }
-      .switch-btn:hover {
-        background: rgba(0, 0, 0, 0.65);
-        transform: scale(1.05);
-      }
-      .switch-btn:active {
-        transform: scale(0.92);
-      }
-      .switch-btn.spinning i {
-        animation: camSpin 0.6s ease;
-      }
-      @keyframes camSpin {
-        from {
-          transform: rotate(0deg);
+        body {
+            font-family: 'Noto Sans Lao', 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        to {
-          transform: rotate(360deg);
+        /* Custom scrollbar styling for search dropdown */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
         }
-      }
-
-      /* Beauty status badge (top-left of video) */
-      .beauty-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: linear-gradient(
-          135deg,
-          rgba(236, 72, 153, 0.92),
-          rgba(168, 85, 247, 0.92)
-        );
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        color: white;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 5px 10px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        z-index: 10;
-        letter-spacing: 0.3px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
-        transition:
-          opacity 0.25s ease,
-          transform 0.25s ease;
-      }
-      .beauty-badge.hidden-badge {
-        opacity: 0;
-        transform: translateX(-6px);
-        pointer-events: none;
-      }
-
-      /* ===== Beauty Filter Controls ===== */
-      .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 44px;
-        height: 24px;
-        flex-shrink: 0;
-      }
-      .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-      .toggle-slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #cbd5e1;
-        transition: 0.3s;
-        border-radius: 24px;
-      }
-      .toggle-slider::before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-      }
-      input:checked + .toggle-slider {
-        background: linear-gradient(135deg, #ec4899, #a855f7);
-      }
-      input:checked + .toggle-slider::before {
-        transform: translateX(20px);
-      }
-
-      .beauty-range {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(
-          to right,
-          #e2e8f0,
-          #ec4899 30%,
-          #a855f7 70%,
-          #1191d6
-        );
-        border-radius: 3px;
-        outline: none;
-        cursor: pointer;
-      }
-      .beauty-range::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        background: white;
-        border: 3px solid #a855f7;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(168, 85, 247, 0.4);
-        transition: transform 0.15s;
-      }
-      .beauty-range::-webkit-slider-thumb:hover {
-        transform: scale(1.15);
-      }
-      .beauty-range::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        background: white;
-        border: 3px solid #a855f7;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(168, 85, 247, 0.4);
-      }
-
-      .preset-chip {
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: #f1f5f9;
-        color: #64748b;
-        border: 1px solid #e2e8f0;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        white-space: nowrap;
-      }
-      .preset-chip:hover:not(.active) {
-        background: #e2e8f0;
-        color: #334155;
-      }
-      .preset-chip.active {
-        background: linear-gradient(135deg, #ec4899, #a855f7);
-        color: white;
-        border-color: transparent;
-        box-shadow: 0 2px 8px rgba(168, 85, 247, 0.35);
-      }
-
-      /* Pulse animation for "filter active" indicator */
-      @keyframes glow-pulse {
-        0%,
-        100% {
-          box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.5);
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
-        50% {
-          box-shadow: 0 0 0 6px rgba(168, 85, 247, 0);
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
-      }
-      .glow-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #ec4899, #a855f7);
-        animation: glow-pulse 2s infinite;
-      }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Safe area adjustments for notched mobile screens */
+        .safe-padding-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+
+        /* ===== Camera Switch Button (top-right of video) ===== */
+        .switch-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+        .switch-btn:hover { background: rgba(0, 0, 0, 0.65); transform: scale(1.05); }
+        .switch-btn:active { transform: scale(0.92); }
+        .switch-btn.spinning i { animation: camSpin .6s ease; }
+        @keyframes camSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Beauty status badge (top-left of video) */
+        .beauty-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.92), rgba(168, 85, 247, 0.92));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+            transition: opacity .25s ease, transform .25s ease;
+        }
+        .beauty-badge.hidden-badge { opacity: 0; transform: translateX(-6px); pointer-events: none; }
+
+        /* ===== Beauty Filter Controls ===== */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .toggle-slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+        }
+        input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        .beauty-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #e2e8f0, #ec4899 30%, #a855f7 70%, #1191d6);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+        .beauty-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(168, 85, 247, 0.4);
+            transition: transform .15s;
+        }
+        .beauty-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        .beauty-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(168, 85, 247, 0.4);
+        }
+
+        .preset-chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .preset-chip:hover:not(.active) { background: #e2e8f0; color: #334155; }
+        .preset-chip.active {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.35);
+        }
+
+        /* Pulse animation for "filter active" indicator */
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(168, 85, 247, 0); }
+        }
+        .glow-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            animation: glow-pulse 2s infinite;
+        }
     </style>
-  </head>
-  <body class="flex flex-col min-h-screen text-slate-800 antialiased">
-    <header
-      class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-40 py-4 px-4"
-    >
-      <!-- Header Container with Left Text & Right Logo -->
-      <div class="max-w-xl mx-auto flex items-center justify-between gap-4">
-        <!-- Left Header Details -->
-        <div class="flex flex-col flex-1 min-w-0">
-          <h1
-            class="font-extrabold text-sm md:text-base tracking-tight text-slate-900 truncate flex gap-1 flex-col"
-          >
-            <span>ລະບົບຕິດຕາມການປະຕິບັດວັດຖະນະທຳອົງກອນ</span
-            ><span>ທພລ ສາຂາພາກຫຼວງນ້ຳທາ</span>
-          </h1>
-          <p id="live-clock" class="text-xs text-slate-500 font-medium mt-0.5">
-            ກຳລັງໂຫລດເວລາ...
-          </p>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased">
 
-          <!-- Status Badge (Moved directly below the datetime) -->
-          <div
-            id="header-status-badge"
-            class="flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0"
-          >
-            <span class="relative flex h-2 w-2">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
-              ></span>
-            </span>
-            <span
-              id="header-status-text"
-              class="text-[10px] font-bold tracking-wide uppercase"
-              >ເຮັດວຽກຢູ່</span
-            >
-          </div>
+    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-40 py-4 px-4">
+        <!-- Header Container with Left Text & Right Logo -->
+        <div class="max-w-xl mx-auto flex items-center justify-between gap-4">
+            <!-- Left Header Details -->
+            <div class="flex flex-col flex-1 min-w-0">
+                <h1 class="font-extrabold text-sm md:text-base tracking-tight text-slate-900 truncate flex flex-col gap-1">
+                    <span>ລະບົບຕິດຕາມການປະຕິບັດວັດຖະນະທຳອົງກອນ</span><span>ທພລ ສາຂາພາກຫຼວງນ້ຳທາ</span>
+                </h1>
+                <p id="live-clock" class="text-xs text-slate-500 font-medium mt-0.5">
+                    ກຳລັງໂຫລດເວລາ...
+                </p>
+                
+                <!-- Status Badge (Moved directly below the datetime) -->
+                <div id="header-status-badge" class="flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span id="header-status-text" class="text-[10px] font-bold tracking-wide uppercase">ເຮັດວຽກຢູ່</span>
+                </div>
+            </div>
+            
+            <!-- Right Header Logo (Replaced old Badge location) -->
+            <div class="shrink-0 flex items-center">
+                <img src="https://www.ldblao.la/_nuxt/img/LDB%20Logo_new2_1.0731bb5.png" 
+                     class="h-12 md:h-14 w-auto object-contain" 
+                     alt="LDB Logo"
+                     onerror="this.src='https://placehold.co/150x50/1191d6/ffffff?text=LDB+BANK'">
+            </div>
         </div>
-
-        <!-- Right Header Logo (Replaced old Badge location) -->
-        <div class="shrink-0 flex items-center">
-          <img
-            src="https://www.ldblao.la/_nuxt/img/LDB%20Logo_new2_1.0731bb5.png"
-            class="h-12 md:h-14 w-auto object-contain"
-            alt="LDB Logo"
-            onerror="
-              this.src =
-                'https://placehold.co/150x50/1191d6/ffffff?text=LDB+BANK'
-            "
-          />
-        </div>
-      </div>
     </header>
 
     <main class="flex-grow px-4 py-6 md:py-8 flex flex-col justify-start">
-      <div
-        class="max-w-xl mx-auto w-full bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 p-5 md:p-8 flex flex-col gap-6"
-      >
-        <!-- Connection Diagnostics Banner -->
-        <div
-          id="error-banner"
-          class="hidden bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start space-x-3"
-        >
-          <i
-            class="fa-solid fa-circle-exclamation text-rose-500 text-lg mt-0.5"
-          ></i>
-          <div class="flex-1">
-            <h4 class="font-semibold text-sm text-rose-800">
-              ການເຊື່ອມຕໍ່ຫຼົ້ມເຫຼວ ("Failed to fetch")
-            </h4>
-            <p class="text-xs text-rose-600 mt-1 leading-relaxed">
-              ການເຊື່ອມຕໍ່ຖືກບລັອກ. ສິ່ງນີ້ມັກເກີດຂຶ້ນຖ້າຫາກການຕັ້ງຄ່າສິດທິໃນ
-              Apps Script ບໍ່ຖືກຕ້ອງ ຫຼື ວາງລິ້ງຄ໌ບໍ່ຖືກ.
-            </p>
-          </div>
+        <div class="max-w-xl mx-auto w-full bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 p-5 md:p-8 flex flex-col gap-6">
+            
+            <!-- Connection Diagnostics Banner -->
+            <div id="error-banner" class="hidden bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start space-x-3">
+                <i class="fa-solid fa-circle-exclamation text-rose-500 text-lg mt-0.5"></i>
+                <div class="flex-1">
+                    <h4 class="font-semibold text-sm text-rose-800">ການເຊື່ອມຕໍ່ຫຼົ້ມເຫຼວ ("Failed to fetch")</h4>
+                    <p class="text-xs text-rose-600 mt-1 leading-relaxed">ການເຊື່ອມຕໍ່ຖືກບລັອກ.</p>
+                </div>
+            </div>
+
+            <!-- Welcome Greeting Module -->
+            <div id="greeting-wrapper" class="bg-gradient-to-r from-slate-50 to-sky-50/30 rounded-2xl p-4 md:p-5 border border-slate-100">
+                <h3 id="time-greeting" class="font-bold text-lg text-slate-800">ສະບາຍດີ, ຍິນດີຕ້ອນຮັບ!</h3>
+                <p class="text-xs text-slate-500 mt-1">ກະລຸນາຕື່ມຂໍ້ມູນໃສ່ຫ້ອງລຸ່ມນີ້ເພື່ອບັນທຶກຂໍ້ມູນການປະຕິບັດວັດຖະນະທຳອົງກອນປະຈຳວັນ.</p>
+            </div>
+
+            <!-- Main Form -->
+            <form id="checkin-form" class="space-y-6" onsubmit="handleFormSubmission(event)">
+                
+                <div class="space-y-2 relative">
+                    <label class="block text-sm font-semibold text-slate-700 flex justify-between items-center">
+                        <span>ເລືອກຊື່ຂອງທ່ານ <span class="text-rose-500">*</span></span>
+                        <span id="sync-status" class="text-xs font-normal text-[#1191d6]">ກຳລັງເຊື່ອມຕໍ່ຖານຂໍ້ມູນ...</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </span>
+                        <input type="text" id="emp-search-input" placeholder="ພິມຊື່ ຫຼື ລະຫັດພະນັກງານຂອງທ່ານເພື່ອຄົ້ນຫາ..." 
+                               class="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm font-medium" 
+                               autocomplete="off" required>
+                        <span id="clear-search" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </span>
+                    </div>
+
+                    <!-- Hidden Input holding original emp_id -->
+                    <input type="hidden" id="emp-id-value" name="emp_id" required>
+
+                    <!-- Filtered Options List -->
+                    <div id="emp-dropdown-list" class="hidden absolute left-0 right-0 mt-1.5 max-h-60 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-y-auto custom-scroll">
+                        <div id="emp-list-container" class="py-1">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="employee-profile-card" class="hidden bg-slate-50 border border-slate-200/60 rounded-xl p-4 flex items-center justify-between transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-[#1191d6]/10 flex items-center justify-center text-[#1191d6] font-bold text-sm" id="profile-avatar">
+                            --
+                        </div>
+                        <div>
+                            <h4 id="profile-name" class="font-bold text-sm text-slate-800">---</h4>
+                            <p id="profile-details" class="text-xs text-slate-500 mt-0.5">---</p>
+                        </div>
+                    </div>
+                    <span class="bg-[#1191d6]/10 text-[#1191d6] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-[#1191d6]/20" id="profile-dept">
+                        ---
+                    </span>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">
+                        ຖ່າຍຮູບ / ເຊວຟີ <span class="text-rose-500">*</span>
+                    </label>
+                    
+                    <div class="border-2 border-dashed border-slate-200 rounded-2xl p-2 bg-slate-50 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden group">
+                        <!-- Video stream container -->
+                        <div id="camera-stream-container" class="hidden w-full h-56 bg-black rounded-xl overflow-hidden relative">
+                            <video id="webcam-feed" autoplay playsinline muted class="w-full h-full object-cover transition-[filter,transform] duration-200" style="transform: scaleX(-1);"></video>
+
+                            <!-- ===== Camera Switch Button (NEW) ===== -->
+                            <button type="button" id="switch-camera-btn" onclick="switchCamera()" class="switch-btn" aria-label="ສະຫຼັບກ້ອງ" title="ສະຫຼັບກ້ອງໜ້າ / ຫຼັງ">
+                                <i class="fa-solid fa-camera-rotate text-base"></i>
+                            </button>
+
+                            <!-- ===== Beauty Badge (NEW) ===== -->
+                            <div id="beauty-badge" class="beauty-badge">
+                                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                                <span id="beauty-badge-text">BEAUTY ON</span>
+                            </div>
+
+                            <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-2 px-4">
+                                <button type="button" onclick="snapPhoto()" class="bg-[#1191d6] hover:bg-[#0e7db1] active:scale-95 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>ຖ່າຍຮູບເຊວຟີ</span>
+                                </button>
+                                <button type="button" onclick="stopCameraStream()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition-all">
+                                    ຍົກເລີກ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Image Preview Element -->
+                        <div id="image-preview-container" class="hidden w-full h-56 rounded-xl overflow-hidden relative">
+                            <img id="image-preview" class="w-full h-full object-cover" src="" alt="Captured CheckIn Thumbnail">
+                            <div class="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                <button type="button" onclick="resetCaptureModule()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>ຖ່າຍຮູບໃໝ່</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Initial action selection state -->
+                        <div id="camera-placeholder" class="py-6 flex flex-col items-center justify-center text-center px-4 w-full">
+                            <div class="w-14 h-14 bg-sky-50 border border-sky-100 rounded-full flex items-center justify-center text-[#1191d6] mb-3 group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-camera-retro text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-700">ຈຳເປັນຕ້ອງມີການຖ່າຍຮູບ</h4>
+                            <p class="text-xs text-slate-400 max-w-[280px] mt-1 mb-4">ກະລຸນາໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2 w-full max-w-sm justify-center">
+                                <button type="button" onclick="startCameraStream()" class="flex-1 bg-[#1191d6] hover:bg-[#0e7db1] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-md shadow-sky-100 flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>ໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ</span>
+                                </button>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== Beauty Filter Panel (NEW) ===== -->
+                    <div id="beauty-filter-panel" class="mt-3 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 rounded-2xl border border-pink-100/60 p-4 space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2.5 min-w-0">
+                                <div class="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center text-white shadow-md shrink-0">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="text-sm font-bold text-slate-800 leading-tight">ປັບພາບ</h4>
+                                    <p class="text-[10px] text-slate-500 leading-tight mt-0.5">ເລືອກຮູບແບບຮູບ</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <div id="beauty-status-dot" class="glow-dot"></div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="beauty-toggle" checked onchange="onBeautyToggle(this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                            <button type="button" class="preset-chip active" data-preset="natural" onclick="setBeautyPreset('natural')">
+                                <i class="fa-solid fa-leaf text-[10px]"></i>
+                                <span>ທຳມະຊາດ</span>
+                            </button>
+                            <button type="button" class="preset-chip" data-preset="smooth" onclick="setBeautyPreset('smooth')">
+                                <i class="fa-solid fa-feather text-[10px]"></i>
+                                <span>ນຸ້ມນວນ</span>
+                            </button>
+                            <button type="button" class="preset-chip" data-preset="glow" onclick="setBeautyPreset('glow')">
+                                <i class="fa-solid fa-sun text-[10px]"></i>
+                                <span>ເປັນປະກາຍ</span>
+                            </button>
+                            <button type="button" class="preset-chip" data-preset="hd" onclick="setBeautyPreset('hd')">
+                                <i class="fa-solid fa-sparkles text-[10px]"></i>
+                                <span>HD</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="remarks" class="block text-sm font-semibold text-slate-700 flex justify-between items-center">
+                        <span>ໝາຍເຫດ <span class="text-slate-400 font-normal">(ທາງເລືອກ)</span></span>
+                        <span id="char-counter" class="text-xs text-slate-400">0 / 120 ຕົວອັກສອນ</span>
+                    </label>
+                    <textarea id="remarks" name="remarks" maxlength="120" rows="2" placeholder="ຕົວຢ່າງ: ປະຕິບັດວຽກນອກສະຖານທີ່, ເດີນທາງປະຊຸມຕ່າງແຂວງ ແລະ ອື່ນໆ..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm"
+                              oninput="updateCharCounter()"></textarea>
+                </div>
+
+                <!-- Submission Button (Updated requested text string) -->
+                <button type="submit" id="btn-submit-checkin" class="w-full bg-[#1191d6] hover:bg-[#0e7db1] text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-100 transition-all hover:shadow-xl active:scale-[0.98] flex items-center justify-center space-x-2 text-sm md:text-base">
+                    <i class="fa-solid fa-clipboard-check text-lg"></i>
+                    <span>ບັນທຶກຂໍ້ມູນປະຕິບັດວັດຖະນະທຳ</span>
+                </button>
+            </form>
         </div>
-
-        <!-- Welcome Greeting Module -->
-        <div
-          id="greeting-wrapper"
-          class="bg-gradient-to-r from-slate-50 to-sky-50/30 rounded-2xl p-4 md:p-5 border border-slate-100"
-        >
-          <h3 id="time-greeting" class="font-bold text-lg text-slate-800">
-            ສະບາຍດີ, ຍິນດີຕ້ອນຮັບ!
-          </h3>
-          <p class="text-xs text-slate-500 mt-1">
-            ກະລຸນາຕື່ມຂໍ້ມູນໃສ່ຫ້ອງລຸ່ມນີ້ເພື່ອບັນທຶກຂໍ້ມູນການປະຕິບັດວັດຖະນະທຳອົງກອນປະຈຳວັນ.
-          </p>
-        </div>
-
-        <!-- Main Form -->
-        <form
-          id="checkin-form"
-          class="space-y-6"
-          onsubmit="handleFormSubmission(event)"
-        >
-          <div class="space-y-2 relative">
-            <label
-              class="block text-sm font-semibold text-slate-700 flex justify-between items-center"
-            >
-              <span>ເລືອກຊື່ຂອງທ່ານ <span class="text-rose-500">*</span></span>
-              <span id="sync-status" class="text-xs font-normal text-[#1191d6]"
-                >ກຳລັງເຊື່ອມຕໍ່ຖານຂໍ້ມູນ...</span
-              >
-            </label>
-            <div class="relative">
-              <span
-                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"
-              >
-                <i class="fa-solid fa-user-tag"></i>
-              </span>
-              <input
-                type="text"
-                id="emp-search-input"
-                placeholder="ພິມຊື່ ຫຼື ລະຫັດພະນັກງານຂອງທ່ານເພື່ອຄົ້ນຫາ..."
-                class="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm font-medium"
-                autocomplete="off"
-                required
-              />
-              <span
-                id="clear-search"
-                class="hidden absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-400 hover:text-slate-600"
-              >
-                <i class="fa-solid fa-circle-xmark"></i>
-              </span>
-            </div>
-
-            <!-- Hidden Input holding original emp_id -->
-            <input type="hidden" id="emp-id-value" name="emp_id" required />
-
-            <!-- Filtered Options List -->
-            <div
-              id="emp-dropdown-list"
-              class="hidden absolute left-0 right-0 mt-1.5 max-h-60 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-y-auto custom-scroll"
-            >
-              <div id="emp-list-container" class="py-1">
-                <!-- Injected dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <div
-            id="employee-profile-card"
-            class="hidden bg-slate-50 border border-slate-200/60 rounded-xl p-4 flex items-center justify-between transition-all duration-300"
-          >
-            <div class="flex items-center space-x-3">
-              <div
-                class="w-10 h-10 rounded-full bg-[#1191d6]/10 flex items-center justify-center text-[#1191d6] font-bold text-sm"
-                id="profile-avatar"
-              >
-                --
-              </div>
-              <div>
-                <h4 id="profile-name" class="font-bold text-sm text-slate-800">
-                  ---
-                </h4>
-                <p id="profile-details" class="text-xs text-slate-500 mt-0.5">
-                  ---
-                </p>
-              </div>
-            </div>
-            <span
-              class="bg-[#1191d6]/10 text-[#1191d6] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-[#1191d6]/20"
-              id="profile-dept"
-            >
-              ---
-            </span>
-          </div>
-
-          <div class="space-y-2">
-            <label class="block text-sm font-semibold text-slate-700">
-              ຖ່າຍຮູບ / ເຊວຟີ <span class="text-rose-500">*</span>
-            </label>
-
-            <div
-              class="border-2 border-dashed border-slate-200 rounded-2xl p-2 bg-slate-50 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden group"
-            >
-              <!-- Video stream container -->
-              <div
-                id="camera-stream-container"
-                class="hidden w-full h-56 bg-black rounded-xl overflow-hidden relative"
-              >
-                <video
-                  id="webcam-feed"
-                  autoplay
-                  playsinline
-                  muted
-                  class="w-full h-full object-cover transform -scale-x-100 transition-[filter] duration-200"
-                ></video>
-
-                <!-- ===== Camera Switch Button (NEW) ===== -->
-                <button
-                  type="button"
-                  id="switch-camera-btn"
-                  onclick="switchCamera()"
-                  class="switch-btn"
-                  aria-label="ສະຫຼັບກ້ອງ"
-                  title="ສະຫຼັບກ້ອງໜ້າ / ຫຼັງ"
-                >
-                  <i class="fa-solid fa-camera-rotate text-base"></i>
-                </button>
-
-                <!-- ===== Beauty Badge (NEW) ===== -->
-                <div id="beauty-badge" class="beauty-badge">
-                  <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
-                  <span id="beauty-badge-text">BEAUTY ON</span>
-                </div>
-
-                <div
-                  class="absolute bottom-3 left-0 right-0 flex justify-center space-x-2 px-4"
-                >
-                  <button
-                    type="button"
-                    onclick="snapPhoto()"
-                    class="bg-[#1191d6] hover:bg-[#0e7db1] active:scale-95 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5"
-                  >
-                    <i class="fa-solid fa-camera"></i>
-                    <span>ຖ່າຍຮູບເຊວຟີ</span>
-                  </button>
-                  <button
-                    type="button"
-                    onclick="stopCameraStream()"
-                    class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition-all"
-                  >
-                    ຍົກເລີກ
-                  </button>
-                </div>
-              </div>
-
-              <!-- Image Preview Element -->
-              <div
-                id="image-preview-container"
-                class="hidden w-full h-56 rounded-xl overflow-hidden relative"
-              >
-                <img
-                  id="image-preview"
-                  class="w-full h-full object-cover"
-                  src=""
-                  alt="Captured CheckIn Thumbnail"
-                />
-                <div
-                  class="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
-                >
-                  <button
-                    type="button"
-                    onclick="resetCaptureModule()"
-                    class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-1.5"
-                  >
-                    <i class="fa-solid fa-trash-can"></i>
-                    <span>ຖ່າຍຮູບໃໝ່</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Initial action selection state -->
-              <div
-                id="camera-placeholder"
-                class="py-6 flex flex-col items-center justify-center text-center px-4 w-full"
-              >
-                <div
-                  class="w-14 h-14 bg-sky-50 border border-sky-100 rounded-full flex items-center justify-center text-[#1191d6] mb-3 group-hover:scale-105 transition-transform"
-                >
-                  <i class="fa-solid fa-camera-retro text-2xl"></i>
-                </div>
-                <h4 class="font-bold text-sm text-slate-700">
-                  ຈຳເປັນຕ້ອງມີການຖ່າຍຮູບ
-                </h4>
-                <p class="text-xs text-slate-400 max-w-[280px] mt-1 mb-4">
-                  ກະລຸນາໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ.
-                </p>
-
-                <div
-                  class="flex flex-col sm:flex-row gap-2 w-full max-w-sm justify-center"
-                >
-                  <button
-                    type="button"
-                    onclick="startCameraStream()"
-                    class="flex-1 bg-[#1191d6] hover:bg-[#0e7db1] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-md shadow-sky-100 flex items-center justify-center space-x-1.5"
-                  >
-                    <i class="fa-solid fa-video"></i>
-                    <span>ໃຊ້ກ້ອງຖ່າຍຮູບຕົວຈິງ</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- ===== Beauty Filter Panel (NEW) ===== -->
-            <div
-              id="beauty-filter-panel"
-              class="mt-3 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 rounded-2xl border border-pink-100/60 p-4 space-y-3.5"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2.5 min-w-0">
-                  <div
-                    class="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center text-white shadow-md shrink-0"
-                  >
-                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="text-sm font-bold text-slate-800 leading-tight">
-                      ປັບພາບ
-                    </h4>
-                    <p class="text-[10px] text-slate-500 leading-tight mt-0.5">
-                      ເລືອກຮູບແບບຮູບ
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-2 shrink-0">
-                  <div id="beauty-status-dot" class="glow-dot"></div>
-                  <label class="toggle-switch">
-                    <input
-                      type="checkbox"
-                      id="beauty-toggle"
-                      checked
-                      onchange="onBeautyToggle(this.checked)"
-                    />
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-                <button
-                  type="button"
-                  class="preset-chip active"
-                  data-preset="natural"
-                  onclick="setBeautyPreset('natural')"
-                >
-                  <i class="fa-solid fa-leaf text-[10px]"></i>
-                  <span>ທຳມະຊາດ</span>
-                </button>
-                <button
-                  type="button"
-                  class="preset-chip"
-                  data-preset="smooth"
-                  onclick="setBeautyPreset('smooth')"
-                >
-                  <i class="fa-solid fa-feather text-[10px]"></i>
-                  <span>ນຸ້ມນວນ</span>
-                </button>
-                <button
-                  type="button"
-                  class="preset-chip"
-                  data-preset="glow"
-                  onclick="setBeautyPreset('glow')"
-                >
-                  <i class="fa-solid fa-sun text-[10px]"></i>
-                  <span>ເປັນປະກາຍ</span>
-                </button>
-                <button
-                  type="button"
-                  class="preset-chip"
-                  data-preset="hd"
-                  onclick="setBeautyPreset('hd')"
-                >
-                  <i class="fa-solid fa-sparkles text-[10px]"></i>
-                  <span>HD</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="remarks"
-              class="block text-sm font-semibold text-slate-700 flex justify-between items-center"
-            >
-              <span
-                >ໝາຍເຫດ
-                <span class="text-slate-400 font-normal">(ທາງເລືອກ)</span></span
-              >
-              <span id="char-counter" class="text-xs text-slate-400"
-                >0 / 120 ຕົວອັກສອນ</span
-              >
-            </label>
-            <textarea
-              id="remarks"
-              name="remarks"
-              maxlength="120"
-              rows="2"
-              placeholder="ຕົວຢ່າງ: ປະຕິບັດວຽກນອກສະຖານທີ່, ເດີນທາງປະຊຸມຕ່າງແຂວງ ແລະ ອື່ນໆ..."
-              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1191d6] focus:border-[#1191d6] transition-all text-sm"
-              oninput="updateCharCounter()"
-            ></textarea>
-          </div>
-
-          <!-- Submission Button (Updated requested text string) -->
-          <button
-            type="submit"
-            id="btn-submit-checkin"
-            class="w-full bg-[#1191d6] hover:bg-[#0e7db1] text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-100 transition-all hover:shadow-xl active:scale-[0.98] flex items-center justify-center space-x-2 text-sm md:text-base"
-          >
-            <i class="fa-solid fa-clipboard-check text-lg"></i>
-            <span>ບັນທຶກຂໍ້ມູນປະຕິບັດວັດຖະນະທຳ</span>
-          </button>
-        </form>
-      </div>
     </main>
 
-    <footer
-      class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 bg-white safe-padding-bottom"
-    >
-      <div class="max-w-xl mx-auto px-4 flex justify-between items-center">
-        <span>ພັດທະນາໂດຍ ຂະແໜງບັນຊີ-ໄອທີ ສາຂາພາກຫຼວງນ້ຳທາ </span>
-        <span class="flex items-center space-x-1">
-          <span
-            id="pulse-dot"
-            class="w-1.5 h-1.5 bg-[#1191d6] rounded-full inline-block animate-ping"
-          ></span>
-          <span id="sync-text">ກຳລັງເຊື່ອມຕໍ່ລະບົບ</span>
-        </span>
-      </div>
+    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 bg-white safe-padding-bottom">
+        <div class="max-w-xl mx-auto px-4 flex justify-between items-center">
+            <span>ພັດທະນາໂດຍ ຂະແໜງບັນຊີ-ໄອທີ ສາຂາພາກຫຼວງນ້ຳທາ </span>
+            <span class="flex items-center space-x-1">
+                <span id="pulse-dot" class="w-1.5 h-1.5 bg-[#1191d6] rounded-full inline-block animate-ping"></span> 
+                <span id="sync-text">ກຳລັງເຊື່ອມຕໍ່ລະບົບ</span>
+            </span>
+        </div>
     </footer>
 
-    <div
-      id="success-modal"
-      class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white rounded-3xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center transform scale-90 transition-all duration-300"
-      >
-        <div
-          class="w-16 h-16 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 animate-bounce"
-        >
-          <i class="fa-solid fa-circle-check text-3xl"></i>
+    <div id="success-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center transform scale-90 transition-all duration-300">
+            <div class="w-16 h-16 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-circle-check text-3xl"></i>
+            </div>
+            <h3 class="font-extrabold text-xl text-slate-900">ບັນທຶກການເຂົ້າວຽກສຳເລັດ!</h3>
+            <p id="success-welcome-msg" class="text-sm text-slate-500 mt-2">ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ມີຄວາມສຸກ!</p>
+            <div class="mt-6">
+                <button onclick="closeSuccessModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-all text-xs">
+                    ຕົກລົງ, ດີຫຼາຍ!
+                </button>
+            </div>
         </div>
-        <h3 class="font-extrabold text-xl text-slate-900">
-          ບັນທຶກການເຂົ້າວຽກສຳເລັດ!
-        </h3>
-        <p id="success-welcome-msg" class="text-sm text-slate-500 mt-2">
-          ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ມີຄວາມສຸກ!
-        </p>
-        <div class="mt-6">
-          <button
-            onclick="closeSuccessModal()"
-            class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-all text-xs"
-          >
-            ຕົກລົງ, ດີຫຼາຍ!
-          </button>
-        </div>
-      </div>
     </div>
 
-    <div
-      id="error-modal"
-      class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white rounded-2xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center"
-      >
-        <div
-          class="w-14 h-14 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center text-rose-500 mx-auto mb-4"
-        >
-          <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+    <div id="error-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full border border-slate-100 shadow-2xl p-6 text-center">
+            <div class="w-14 h-14 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center text-rose-500 mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-slate-900">ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ</h3>
+            <p id="error-modal-msg" class="text-xs text-slate-500 mt-2 leading-relaxed">ເກີດຂໍ້ຜິດພາດໃນຂະນະທີ່ກຳລັງບັນທຶກການເຂົ້າວຽກຂອງທ່ານ.</p>
+            <div class="mt-5">
+                <button onclick="closeErrorModal()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs">
+                    ປິດ
+                </button>
+            </div>
         </div>
-        <h3 class="font-bold text-lg text-slate-900">
-          ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ
-        </h3>
-        <p
-          id="error-modal-msg"
-          class="text-xs text-slate-500 mt-2 leading-relaxed"
-        >
-          ເກີດຂໍ້ຜິດພາດໃນຂະນະທີ່ກຳລັງບັນທຶກການເຂົ້າວຽກຂອງທ່ານ.
-        </p>
-        <div class="mt-5">
-          <button
-            onclick="closeErrorModal()"
-            class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs"
-          >
-            ປິດ
-          </button>
-        </div>
-      </div>
     </div>
 
-    <div
-      id="global-spinner"
-      class="hidden fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 flex flex-col items-center justify-center text-white"
-    >
-      <div class="relative w-16 h-16 flex items-center justify-center">
-        <div
-          class="absolute w-12 h-12 border-4 border-white/20 rounded-full"
-        ></div>
-        <div
-          class="absolute w-12 h-12 border-4 border-t-[#1191d6] border-r-[#1191d6] border-b-transparent border-l-transparent rounded-full animate-spin"
-        ></div>
-      </div>
-      <p
-        id="spinner-text"
-        class="text-xs font-semibold mt-4 tracking-wide uppercase"
-      >
-        ກຳລັງບັນທຶກຂໍ້ມູນ...
-      </p>
+    <div id="global-spinner" class="hidden fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 flex flex-col items-center justify-center text-white">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+            <div class="absolute w-12 h-12 border-4 border-white/20 rounded-full"></div>
+            <div class="absolute w-12 h-12 border-4 border-t-[#1191d6] border-r-[#1191d6] border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        </div>
+        <p id="spinner-text" class="text-xs font-semibold mt-4 tracking-wide uppercase">ກຳລັງບັນທຶກຂໍ້ມູນ...</p>
     </div>
 
     <script>
-      // =========================================================================
-      // PRODUCTION HARDCODED CONFIGURATION
-      // =========================================================================
-      // Paste your deployed Google Apps Script Web App Endpoint URL here.
-      const CONFIG_APPS_SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycby1n2-6xwSRvg1w0oA3ri1YYT_8VGBkBnpGOpzntQeLcFiqWTx0bJfVJ1fkIu65UDZXvQ/exec";
-      // =========================================================================
+        // =========================================================================
+        // PRODUCTION HARDCODED CONFIGURATION
+        // =========================================================================
+        // Paste your deployed Google Apps Script Web App Endpoint URL here.
+        const CONFIG_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1n2-6xwSRvg1w0oA3ri1YYT_8VGBkBnpGOpzntQeLcFiqWTx0bJfVJ1fkIu65UDZXvQ/exec"; 
+        // =========================================================================
 
-      // Mock roster fallback used ONLY if CONFIG_APPS_SCRIPT_URL is still a placeholder
-      const sandboxEmployees = [
-        {
-          emp_id: "EMP101",
-          emp_name: "Sarah Jenkins",
-          emp_position: "Senior Designer",
-          emp_department: "Product Design",
-        },
-        {
-          emp_id: "EMP102",
-          emp_name: "David Chen",
-          emp_position: "Software Engineer",
-          emp_department: "Engineering",
-        },
-        {
-          emp_id: "EMP103",
-          emp_name: "Jessica Alabi",
-          emp_position: "Marketing Manager",
-          emp_department: "Growth",
-        },
-        {
-          emp_id: "EMP104",
-          emp_name: "Marcus Aurelius",
-          emp_position: "HR Partner",
-          emp_department: "People Ops",
-        },
-        {
-          emp_id: "EMP105",
-          emp_name: "Amelia Earhart",
-          emp_position: "Logistics Specialist",
-          emp_department: "Operations",
-        },
-      ];
+        // Mock roster fallback used ONLY if CONFIG_APPS_SCRIPT_URL is still a placeholder
+        const sandboxEmployees = [
+            { emp_id: "EMP101", emp_name: "Sarah Jenkins", emp_position: "Senior Designer", emp_department: "Product Design" },
+            { emp_id: "EMP102", emp_name: "David Chen", emp_position: "Software Engineer", emp_department: "Engineering" },
+            { emp_id: "EMP103", emp_name: "Jessica Alabi", emp_position: "Marketing Manager", emp_department: "Growth" },
+            { emp_id: "EMP104", emp_name: "Marcus Aurelius", emp_position: "HR Partner", emp_department: "People Ops" },
+            { emp_id: "EMP105", emp_name: "Amelia Earhart", emp_position: "Logistics Specialist", emp_department: "Operations" }
+        ];
 
-      // Active State
-      let employeesData = [];
-      let selectedEmployee = null;
-      let localStream = null;
-      let base64Image = null;
-      let isDemoMode = true;
+        // Active State
+        let employeesData = [];
+        let selectedEmployee = null;
+        let localStream = null;
+        let base64Image = null;
+        let isDemoMode = true;
 
-      // ====== NEW: Camera + Beauty Filter State ======
-      let currentFacingMode = "user"; // 'user' (front) or 'environment' (back)
-      let beautyEnabled = true;
-      let beautyIntensity = 0.5; // 0–1
-      let currentPreset = "natural";
-      let availableCameras = []; // populated on first enumerateDevices
+        // ====== NEW: Camera + Beauty Filter State ======
+        let currentFacingMode = 'user';      // 'user' (front) or 'environment' (back)
+        let beautyEnabled = true;
+        let beautyIntensity = 0.5;           // 0–1
+        let currentPreset = 'natural';
+        let availableCameras = [];           // populated on first enumerateDevices
 
-      function initLiveClock() {
-        const clockEl = document.getElementById("live-clock");
-        const greetingEl = document.getElementById("time-greeting");
-
-        function tick() {
-          const now = new Date();
-
-          // Format date in Lao language culture
-          const dateOptions = {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          };
-          const dateStr = now.toLocaleDateString("lo-LA", dateOptions);
-
-          // Format 24h time format clearly
-          const timeOptions = {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          };
-          const timeStr = now.toLocaleTimeString("lo-LA", timeOptions);
-
-          clockEl.textContent = `${dateStr} | ${timeStr}`;
-
-          const hours = now.getHours();
-          if (hours < 12) {
-            greetingEl.textContent = "ສະບາຍດີຕອນເຊົ້າ! ☀️";
-          } else if (hours < 17) {
-            greetingEl.textContent = "ສະບາຍດີຕອນບ່າຍ! 🌤️";
-          } else {
-            greetingEl.textContent = "ສະບາຍດີຕອນແລງ! 🌙";
-          }
+        function initLiveClock() {
+            const clockEl = document.getElementById('live-clock');
+            const greetingEl = document.getElementById('time-greeting');
+            
+            function tick() {
+                const now = new Date();
+                
+                // Format date in Lao language culture
+                const dateOptions = {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                };
+                const dateStr = now.toLocaleDateString('lo-LA', dateOptions);
+                
+                // Format 24h time format clearly
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                const timeStr = now.toLocaleTimeString('lo-LA', timeOptions);
+                
+                clockEl.textContent = `${dateStr} | ${timeStr}`;
+                
+                const hours = now.getHours();
+                if (hours < 12) {
+                    greetingEl.textContent = "ສະບາຍດີຕອນເຊົ້າ! ☀️";
+                } else if (hours < 17) {
+                    greetingEl.textContent = "ສະບາຍດີຕອນບ່າຍ! 🌤️";
+                } else {
+                    greetingEl.textContent = "ສະບາຍດີຕອນແລງ! 🌙";
+                }
+            }
+            setInterval(tick, 1000);
+            tick();
         }
-        setInterval(tick, 1000);
-        tick();
-      }
 
-      // DOM Initializer
-      window.addEventListener("DOMContentLoaded", () => {
-        initLiveClock();
-        checkSystemConfiguration();
-        setupSearchDropdownLogic();
+        // DOM Initializer
+        window.addEventListener('DOMContentLoaded', () => {
+            initLiveClock();
+            checkSystemConfiguration();
+            setupSearchDropdownLogic();
+            
+            // Dropdown click-outside dismiss handler
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('emp-dropdown-list');
+                const searchInput = document.getElementById('emp-search-input');
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
 
-        // Dropdown click-outside dismiss handler
-        document.addEventListener("click", (e) => {
-          const dropdown = document.getElementById("emp-dropdown-list");
-          const searchInput = document.getElementById("emp-search-input");
-          if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.add("hidden");
-          }
+            // Pre-fetch camera list (used to hide switch button on single-camera devices like Mac)
+            refreshVideoDevices().then(cams => {
+                availableCameras = cams;
+                updateSwitchButtonAvailability();
+            }).catch(() => {});
         });
 
-        // Pre-fetch camera list (used to hide switch button on single-camera devices like Mac)
-        refreshVideoDevices()
-          .then((cams) => {
-            availableCameras = cams;
-            updateSwitchButtonAvailability();
-          })
-          .catch(() => {});
-      });
+        function checkSystemConfiguration() {
+            const syncStatus = document.getElementById('sync-status');
+            const syncText = document.getElementById('sync-text');
+            const pulseDot = document.getElementById('pulse-dot');
+            const hStatus = document.getElementById('header-status-text');
+            const hBadge = document.getElementById('header-status-badge');
 
-      function checkSystemConfiguration() {
-        const syncStatus = document.getElementById("sync-status");
-        const syncText = document.getElementById("sync-text");
-        const pulseDot = document.getElementById("pulse-dot");
-        const hStatus = document.getElementById("header-status-text");
-        const hBadge = document.getElementById("header-status-badge");
-
-        if (
-          CONFIG_APPS_SCRIPT_URL &&
-          CONFIG_APPS_SCRIPT_URL !== "YOUR_APPS_SCRIPT_URL_HERE" &&
-          CONFIG_APPS_SCRIPT_URL.trim() !== ""
-        ) {
-          isDemoMode = false;
-          syncStatus.textContent = "ກຳລັງເຊື່ອມຕໍ່ຫາຖານຂໍ້ມູນ...";
-          syncText.textContent = "ເປີດໃຊ້ງານລະບົບອອນລາຍ";
-          hStatus.textContent = "ເຊື່ອມຕໍ່ແລ້ວ";
-          hBadge.className =
-            "flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0";
-          fetchEmployeesDirectory();
-        } else {
-          // Run in simulated sandbox fallback for testing
-          isDemoMode = true;
-          employeesData = [...sandboxEmployees];
-          syncStatus.textContent = "ກຳລັງໃຊ້ລາຍຊື່ຈຳລອງ";
-          syncStatus.className = "text-xs font-normal text-amber-600";
-          syncText.textContent = "ລະບົບຈຳລອງທົດລອງ";
-          pulseDot.className =
-            "w-1.5 h-1.5 bg-amber-500 rounded-full inline-block animate-ping";
-          hStatus.textContent = "ລະບົບຈຳລອງ";
-          hBadge.className =
-            "flex items-center space-x-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-xl border border-amber-100 self-start mt-2 shrink-0";
+            if (CONFIG_APPS_SCRIPT_URL && CONFIG_APPS_SCRIPT_URL !== "YOUR_APPS_SCRIPT_URL_HERE" && CONFIG_APPS_SCRIPT_URL.trim() !== '') {
+                isDemoMode = false;
+                syncStatus.textContent = "ກຳລັງເຊື່ອມຕໍ່ຫາຖານຂໍ້ມູນ...";
+                syncText.textContent = "ເປີດໃຊ້ງານລະບົບອອນລາຍ";
+                hStatus.textContent = "ເຊື່ອມຕໍ່ແລ້ວ";
+                hBadge.className = "flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl border border-emerald-100 self-start mt-2 shrink-0";
+                fetchEmployeesDirectory();
+            } else {
+                // Run in simulated sandbox fallback for testing
+                isDemoMode = true;
+                employeesData = [...sandboxEmployees];
+                syncStatus.textContent = "ກຳລັງໃຊ້ລາຍຊື່ຈຳລອງ";
+                syncStatus.className = "text-xs font-normal text-amber-600";
+                syncText.textContent = "ລະບົບຈຳລອງທົດລອງ";
+                pulseDot.className = "w-1.5 h-1.5 bg-amber-500 rounded-full inline-block animate-ping";
+                hStatus.textContent = "ລະບົບຈຳລອງ";
+                hBadge.className = "flex items-center space-x-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-xl border border-amber-100 self-start mt-2 shrink-0";
+            }
         }
-      }
 
-      async function fetchEmployeesDirectory() {
-        const syncStatus = document.getElementById("sync-status");
-        const syncText = document.getElementById("sync-text");
-        const pulseDot = document.getElementById("pulse-dot");
-        const errorBanner = document.getElementById("error-banner");
-
-        try {
-          const targetUrl = `${CONFIG_APPS_SCRIPT_URL}?action=getEmployees`;
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-          const response = await fetch(targetUrl, {
-            method: "GET",
-            mode: "cors",
-            signal: controller.signal,
-          });
-
-          clearTimeout(timeoutId);
-          const result = await response.json();
-
-          if (result.status === "success") {
-            employeesData = result.data;
-            errorBanner.classList.add("hidden");
-            syncStatus.textContent = `ໂຫລດຂໍ້ມູນພະນັກງານແລ້ວ ${employeesData.length} ຄົນ`;
-            syncStatus.className = "text-xs font-semibold text-emerald-600";
-            syncText.textContent = "ເຊື່ອມຕໍ່ຖານຂໍ້ມູນແລ້ວ";
-            pulseDot.className =
-              "w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block";
-          } else {
-            throw new Error(result.message || "Failed pulling roster");
-          }
-        } catch (err) {
-          console.error("API Fetch Directory Error: ", err);
-          // Fallback gracefully so employees are never stranded on site
-          employeesData = [...sandboxEmployees];
-          errorBanner.classList.remove("hidden");
-          syncStatus.textContent = "ກຳລັງໃຊ້ລະບົບອອບລາຍ";
-          syncStatus.className = "text-xs font-normal text-rose-500";
-          syncText.textContent = "ພົບບັນຫາໃນການເຊື່ອມຕໍ່";
-          pulseDot.className =
-            "w-1.5 h-1.5 bg-rose-500 rounded-full inline-block animate-pulse";
+        async function fetchEmployeesDirectory() {
+            const syncStatus = document.getElementById('sync-status');
+            const syncText = document.getElementById('sync-text');
+            const pulseDot = document.getElementById('pulse-dot');
+            const errorBanner = document.getElementById('error-banner');
+            
+            try {
+                const targetUrl = `${CONFIG_APPS_SCRIPT_URL}?action=getEmployees`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 12000); 
+                
+                const response = await fetch(targetUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    employeesData = result.data;
+                    errorBanner.classList.add('hidden');
+                    syncStatus.textContent = `ໂຫລດຂໍ້ມູນພະນັກງານແລ້ວ ${employeesData.length} ຄົນ`;
+                    syncStatus.className = "text-xs font-semibold text-emerald-600";
+                    syncText.textContent = "ເຊື່ອມຕໍ່ຖານຂໍ້ມູນແລ້ວ";
+                    pulseDot.className = "w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block";
+                } else {
+                    throw new Error(result.message || "Failed pulling roster");
+                }
+            } catch (err) {
+                console.error("API Fetch Directory Error: ", err);
+                // Fallback gracefully so employees are never stranded on site
+                employeesData = [...sandboxEmployees];
+                errorBanner.classList.remove('hidden');
+                syncStatus.textContent = "ກຳລັງໃຊ້ລະບົບອອບລາຍ";
+                syncStatus.className = "text-xs font-normal text-rose-500";
+                syncText.textContent = "ພົບບັນຫາໃນການເຊື່ອມຕໍ່";
+                pulseDot.className = "w-1.5 h-1.5 bg-rose-500 rounded-full inline-block animate-pulse";
+            }
         }
-      }
 
-      function setupSearchDropdownLogic() {
-        const searchInput = document.getElementById("emp-search-input");
-        const dropdown = document.getElementById("emp-dropdown-list");
-        const clearBtn = document.getElementById("clear-search");
+        function setupSearchDropdownLogic() {
+            const searchInput = document.getElementById('emp-search-input');
+            const dropdown = document.getElementById('emp-dropdown-list');
+            const clearBtn = document.getElementById('clear-search');
+            
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                renderFilteredDropdown(query);
+                
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            });
+            
+            searchInput.addEventListener('focus', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                renderFilteredDropdown(query);
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearBtn.classList.add('hidden');
+                dropdown.classList.add('hidden');
+                resetEmployeeProfile();
+                searchInput.focus();
+            });
+        }
 
-        searchInput.addEventListener("input", () => {
-          const query = searchInput.value.toLowerCase().trim();
-          renderFilteredDropdown(query);
-
-          if (query.length > 0) {
-            clearBtn.classList.remove("hidden");
-          } else {
-            clearBtn.classList.add("hidden");
-          }
-        });
-
-        searchInput.addEventListener("focus", () => {
-          const query = searchInput.value.toLowerCase().trim();
-          renderFilteredDropdown(query);
-        });
-
-        clearBtn.addEventListener("click", () => {
-          searchInput.value = "";
-          clearBtn.classList.add("hidden");
-          dropdown.classList.add("hidden");
-          resetEmployeeProfile();
-          searchInput.focus();
-        });
-      }
-
-      function renderFilteredDropdown(query = "") {
-        const dropdown = document.getElementById("emp-dropdown-list");
-        const listContainer = document.getElementById("emp-list-container");
-
-        listContainer.innerHTML = "";
-
-        const filtered = employeesData.filter((emp) => {
-          const nameMatch = (emp.emp_name || "").toLowerCase().includes(query);
-          const idMatch = (emp.emp_id || "").toLowerCase().includes(query);
-          const deptMatch = (emp.emp_department || "")
-            .toLowerCase()
-            .includes(query);
-          return nameMatch || idMatch || deptMatch;
-        });
-
-        if (filtered.length === 0) {
-          listContainer.innerHTML = `
+        function renderFilteredDropdown(query = '') {
+            const dropdown = document.getElementById('emp-dropdown-list');
+            const listContainer = document.getElementById('emp-list-container');
+            
+            listContainer.innerHTML = '';
+            
+            const filtered = employeesData.filter(emp => {
+                const nameMatch = (emp.emp_name || '').toLowerCase().includes(query);
+                const idMatch = (emp.emp_id || '').toLowerCase().includes(query);
+                const deptMatch = (emp.emp_department || '').toLowerCase().includes(query);
+                return nameMatch || idMatch || deptMatch;
+            });
+            
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
                     <div class="px-4 py-3 text-xs text-slate-400 text-center">
                         <i class="fa-solid fa-users-slash text-base mb-1 block"></i>
                         ບໍ່ພົບຂໍ້ມູນພະນັກງານທີ່ກົງກັນ
                     </div>
                 `;
-        } else {
-          filtered.forEach((emp) => {
-            const option = document.createElement("div");
-            option.className =
-              "px-4 py-3 hover:bg-[#1191d6]/10 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col transition-all";
-            option.innerHTML = `
+            } else {
+                filtered.forEach(emp => {
+                    const option = document.createElement('div');
+                    option.className = "px-4 py-3 hover:bg-[#1191d6]/10 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col transition-all";
+                    option.innerHTML = `
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-sm text-slate-800">${emp.emp_name}</span>
                             <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-500">${emp.emp_id}</span>
@@ -1009,567 +686,557 @@
                             <span class="text-[10px] text-[#1191d6] font-semibold">${emp.emp_department}</span>
                         </div>
                     `;
-            option.addEventListener("click", () => {
-              selectEmployee(emp);
-            });
-            listContainer.appendChild(option);
-          });
-        }
-
-        dropdown.classList.remove("hidden");
-      }
-
-      function selectEmployee(emp) {
-        selectedEmployee = emp;
-
-        document.getElementById("emp-search-input").value = emp.emp_name;
-        document.getElementById("emp-id-value").value = emp.emp_id;
-        document.getElementById("clear-search").classList.remove("hidden");
-        document.getElementById("emp-dropdown-list").classList.add("hidden");
-
-        document.getElementById("profile-name").textContent = emp.emp_name;
-        document.getElementById("profile-details").textContent =
-          `${emp.emp_position} (${emp.emp_id})`;
-        document.getElementById("profile-dept").textContent =
-          emp.emp_department;
-
-        const initials = emp.emp_name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .substring(0, 2)
-          .toUpperCase();
-        document.getElementById("profile-avatar").textContent = initials;
-
-        document
-          .getElementById("employee-profile-card")
-          .classList.remove("hidden");
-      }
-
-      function resetEmployeeProfile() {
-        selectedEmployee = null;
-        document.getElementById("emp-id-value").value = "";
-        document
-          .getElementById("employee-profile-card")
-          .classList.add("hidden");
-      }
-
-      // =========================================================================
-      // CAMERA + BEAUTY FILTER LOGIC
-      // =========================================================================
-
-      /**
-       * Enumerate all video input devices available to the browser.
-       */
-      async function refreshVideoDevices() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices)
-          return [];
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        return devices.filter((d) => d.kind === "videoinput");
-      }
-
-      /**
-       * Hide the camera-switch button entirely if the device exposes only one
-       * video input (e.g., a Mac with just the built-in FaceTime camera).
-       * Re-runs after permission is granted so device labels become accurate.
-       */
-      function updateSwitchButtonAvailability() {
-        const btn = document.getElementById("switch-camera-btn");
-        if (!btn) return;
-        if (availableCameras.length <= 1) {
-          btn.style.display = "none";
-        } else {
-          btn.style.display = "flex";
-        }
-      }
-
-      async function startCameraStream(facingMode = null) {
-        if (facingMode) currentFacingMode = facingMode;
-
-        const container = document.getElementById("camera-stream-container");
-        const placeholder = document.getElementById("camera-placeholder");
-        const video = document.getElementById("webcam-feed");
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showToastError(
-            "ອຸປະກອນຂອງທ່ານບໍ່ຮອງຮັບກ້ອງຖ່າຍຮູບ. ກະລຸນາລອງໃຊ້ເຄື່ອງອື່ນ ຫຼື ປຸ່ມຈຳລອງ.",
-          );
-          return;
-        }
-
-        // Tear down any previous stream first
-        if (localStream) {
-          localStream.getTracks().forEach((t) => t.stop());
-          localStream = null;
-        }
-
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode: currentFacingMode,
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-            },
-            audio: false,
-          });
-
-          localStream = stream;
-          video.srcObject = stream;
-
-          // Re-apply live beauty CSS filter to the (new) video element
-          applyBeautyPreviewFilter();
-
-          // Refresh device list now that we have permission (labels become available)
-          try {
-            availableCameras = await refreshVideoDevices();
-            updateSwitchButtonAvailability();
-          } catch (_) {}
-
-          placeholder.classList.add("hidden");
-          container.classList.remove("hidden");
-        } catch (err) {
-          console.warn("Camera blocks caught: ", err);
-          showToastError(
-            "ບໍ່ສາມາດເປີດກ້ອງຖ່າຍຮູບໄດ້. ກະລຸນາກວດສອບສິດການເຂົ້າເຖິງກ້ອງ ຫຼື ກົດ 'ຈຳລອງການຖ່າຍຮູບ'.",
-          );
-        }
-      }
-
-      /**
-       * Switch to the next available video input device.
-       *
-       * Uses deviceId cycling rather than facingMode toggling — the latter
-       * fails on Mac desktops because built-in cameras only expose one
-       * facingMode. Device cycling works on mobile (front/back cameras each
-       * have a unique deviceId) AND on desktops with multiple USB cameras.
-       */
-      async function switchCamera() {
-        const btn = document.getElementById("switch-camera-btn");
-        if (btn) {
-          btn.classList.add("spinning");
-          setTimeout(() => btn.classList.remove("spinning"), 600);
-        }
-
-        // Re-enumerate to get the latest list (labels appear after permission)
-        let cameras;
-        try {
-          cameras = await refreshVideoDevices();
-          availableCameras = cameras;
-        } catch (_) {
-          cameras = availableCameras;
-        }
-
-        if (!cameras || cameras.length < 2) {
-          showToastError("ອຸປະກອນນີ້ມີກ້ອງພຽງກ້ອງດຽວ");
-          return;
-        }
-
-        // Determine which camera is currently active so we can move to the next one
-        const currentSettings = localStream
-          ?.getVideoTracks?.()[0]
-          ?.getSettings?.();
-        const currentDeviceId = currentSettings?.deviceId;
-        let nextIdx = 0;
-        if (currentDeviceId) {
-          const cur = cameras.findIndex((c) => c.deviceId === currentDeviceId);
-          if (cur >= 0) nextIdx = (cur + 1) % cameras.length;
-        }
-        const nextCamera = cameras[nextIdx];
-
-        // Stop the current stream
-        if (localStream) {
-          localStream.getTracks().forEach((t) => t.stop());
-          localStream = null;
-        }
-        const video = document.getElementById("webcam-feed");
-        if (video) video.srcObject = null;
-
-        // Build constraints: prefer deviceId (works on desktop + mobile with perms),
-        // fall back to facingMode for browsers that don't yet expose IDs.
-        const useExact = !!nextCamera.deviceId;
-        const constraints = useExact
-          ? {
-              video: {
-                deviceId: { exact: nextCamera.deviceId },
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-              },
-              audio: false,
+                    option.addEventListener('click', () => {
+                        selectEmployee(emp);
+                    });
+                    listContainer.appendChild(option);
+                });
             }
-          : {
-              video: {
-                facingMode:
-                  currentFacingMode === "user" ? "environment" : "user",
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-              },
-              audio: false,
+            
+            dropdown.classList.remove('hidden');
+        }
+
+        function selectEmployee(emp) {
+            selectedEmployee = emp;
+            
+            document.getElementById('emp-search-input').value = emp.emp_name;
+            document.getElementById('emp-id-value').value = emp.emp_id;
+            document.getElementById('clear-search').classList.remove('hidden');
+            document.getElementById('emp-dropdown-list').classList.add('hidden');
+            
+            document.getElementById('profile-name').textContent = emp.emp_name;
+            document.getElementById('profile-details').textContent = `${emp.emp_position} (${emp.emp_id})`;
+            document.getElementById('profile-dept').textContent = emp.emp_department;
+            
+            const initials = emp.emp_name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initials;
+            
+            document.getElementById('employee-profile-card').classList.remove('hidden');
+        }
+
+        function resetEmployeeProfile() {
+            selectedEmployee = null;
+            document.getElementById('emp-id-value').value = '';
+            document.getElementById('employee-profile-card').classList.add('hidden');
+        }
+
+        // =========================================================================
+        // CAMERA + BEAUTY FILTER LOGIC
+        // =========================================================================
+
+        /**
+         * Enumerate all video input devices available to the browser.
+         */
+        async function refreshVideoDevices() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return [];
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            return devices.filter(d => d.kind === 'videoinput');
+        }
+
+        /**
+         * Hide the camera-switch button entirely if the device exposes only one
+         * video input (e.g., a Mac with just the built-in FaceTime camera).
+         * Re-runs after permission is granted so device labels become accurate.
+         */
+        function updateSwitchButtonAvailability() {
+            const btn = document.getElementById('switch-camera-btn');
+            if (!btn) return;
+            if (availableCameras.length <= 1) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'flex';
+            }
+        }
+
+        async function startCameraStream(facingMode = null) {
+            if (facingMode) currentFacingMode = facingMode;
+            
+            const container = document.getElementById('camera-stream-container');
+            const placeholder = document.getElementById('camera-placeholder');
+            const video = document.getElementById('webcam-feed');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToastError("ອຸປະກອນຂອງທ່ານບໍ່ຮອງຮັບກ້ອງຖ່າຍຮູບ. ກະລຸນາລອງໃຊ້ເຄື່ອງອື່ນ ຫຼື ປຸ່ມຈຳລອງ.");
+                return;
+            }
+
+            // Tear down any previous stream first
+            if (localStream) {
+                localStream.getTracks().forEach(t => t.stop());
+                localStream = null;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: currentFacingMode,
+                        width:  { ideal: 1280 },
+                        height: { ideal: 720  }
+                    },
+                    audio: false
+                });
+                
+                localStream = stream;
+                video.srcObject = stream;
+                
+                // Re-apply live beauty CSS filter to the (new) video element
+                applyBeautyPreviewFilter();
+
+                // Refresh device list now that we have permission (labels become available)
+                try {
+                    availableCameras = await refreshVideoDevices();
+                    updateSwitchButtonAvailability();
+                } catch (_) {}
+                
+                placeholder.classList.add('hidden');
+                container.classList.remove('hidden');
+            } catch (err) {
+                console.warn("Camera blocks caught: ", err);
+                showToastError("ບໍ່ສາມາດເປີດກ້ອງຖ່າຍຮູບໄດ້. ກະລຸນາກວດສອບສິດການເຂົ້າເຖິງກ້ອງ ຫຼື ກົດ 'ຈຳລອງການຖ່າຍຮູບ'.");
+            }
+        }
+
+        /**
+         * Switch to the next available video input device.
+         *
+         * Uses deviceId cycling rather than facingMode toggling — the latter
+         * fails on Mac desktops because built-in cameras only expose one
+         * facingMode. Device cycling works on mobile (front/back cameras each
+         * have a unique deviceId) AND on desktops with multiple USB cameras.
+         */
+        async function switchCamera() {
+            const btn = document.getElementById('switch-camera-btn');
+            if (btn) {
+                btn.classList.add('spinning');
+                setTimeout(() => btn.classList.remove('spinning'), 600);
+            }
+
+            // Re-enumerate to get the latest list (labels appear after permission)
+            let cameras;
+            try {
+                cameras = await refreshVideoDevices();
+                availableCameras = cameras;
+            } catch (_) {
+                cameras = availableCameras;
+            }
+
+            if (!cameras || cameras.length < 2) {
+                showToastError("ອຸປະກອນນີ້ມີກ້ອງພຽງກ້ອງດຽວ");
+                return;
+            }
+
+            // Determine which camera is currently active so we can move to the next one
+            const currentSettings = localStream?.getVideoTracks?.()[0]?.getSettings?.();
+            const currentDeviceId = currentSettings?.deviceId;
+            let nextIdx = 0;
+            if (currentDeviceId) {
+                const cur = cameras.findIndex(c => c.deviceId === currentDeviceId);
+                if (cur >= 0) nextIdx = (cur + 1) % cameras.length;
+            }
+            const nextCamera = cameras[nextIdx];
+
+            // Stop the current stream
+            if (localStream) {
+                localStream.getTracks().forEach(t => t.stop());
+                localStream = null;
+            }
+            const video = document.getElementById('webcam-feed');
+            if (video) video.srcObject = null;
+
+            // Build constraints: prefer deviceId (works on desktop + mobile with perms),
+            // fall back to facingMode for browsers that don't yet expose IDs.
+            const useExact = !!nextCamera.deviceId;
+            const constraints = useExact
+                ? {
+                    video: {
+                        deviceId: { exact: nextCamera.deviceId },
+                        width:    { ideal: 1280 },
+                        height:   { ideal: 720  }
+                    },
+                    audio: false
+                }
+                : {
+                    video: {
+                        facingMode: currentFacingMode === 'user' ? 'environment' : 'user',
+                        width:  { ideal: 1280 },
+                        height: { ideal: 720  }
+                    },
+                    audio: false
+                };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                localStream = stream;
+                if (video) video.srcObject = stream;
+
+                // Update facingMode hint from the actual stream settings FIRST,
+                // so the preview's mirror transform reflects the new camera
+                // before we re-apply the beauty preview filter below.
+                const trackSettings = stream.getVideoTracks()[0].getSettings();
+                if (trackSettings?.facingMode) {
+                    currentFacingMode = trackSettings.facingMode;
+                }
+
+                applyBeautyPreviewFilter();
+            } catch (err) {
+                console.warn("Camera switch failed:", err);
+                showToastError("ບໍ່ສາມາດສະຫຼັບກ້ອງໄດ້. ກະລຸນາລອງໃໝ່.");
+                // Best-effort: roll back to whatever camera was open before
+                if (localStream === null) {
+                    document.getElementById('camera-stream-container').classList.add('hidden');
+                    document.getElementById('camera-placeholder').classList.remove('hidden');
+                }
+            }
+        }
+
+        function stopCameraStream() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            const video = document.getElementById('webcam-feed');
+            if (video) video.srcObject = null;
+            document.getElementById('camera-stream-container').classList.add('hidden');
+            document.getElementById('camera-placeholder').classList.remove('hidden');
+        }
+
+        /**
+         * NEW: Real-time CSS beauty preview on the live <video> element.
+         * Subtle so the live view doesn't look weird, while the captured
+         * snapshot gets the heavier canvas-based treatment.
+         */
+        function applyBeautyPreviewFilter() {
+            const video = document.getElementById('webcam-feed');
+            const badge = document.getElementById('beauty-badge');
+            if (!video) return;
+
+            // Mirror ONLY for the front-facing (selfie) camera.
+            // Back camera shows the world as-is — no horizontal flip.
+            video.style.transform = shouldMirrorSelfie()
+                ? 'scaleX(-1)'
+                : 'scaleX(1)';
+
+            if (beautyEnabled && beautyIntensity > 0) {
+                const i = beautyIntensity;
+                // soft, perceptible glow during preview
+                video.style.filter =
+                    `brightness(${1 + i * 0.10}) ` +
+                    `contrast(${1 + i * 0.05}) ` +
+                    `saturate(${1 + i * 0.12})`;
+                if (badge) badge.classList.remove('hidden-badge');
+            } else {
+                video.style.filter = 'none';
+                if (badge) badge.classList.add('hidden-badge');
+            }
+        }
+
+        /**
+         * NEW: Multi-pass canvas beauty filter applied to the captured photo.
+         *
+         * Pipeline (when intensity > 0):
+         *   1. Draw the sharp mirrored (selfie) base.
+         *   2. Overlay a blurred+lightened copy using 'soft-light' blend mode —
+         *      this is the classic "skin smoothing" trick: blur hides pores/blemishes
+         *      while soft-light preserves overall contrast and color.
+         *   3. Add a subtle brightness+saturate "glow" pass for that fresh, dewy look.
+         *
+         * @param {HTMLVideoElement} video
+         * @param {HTMLCanvasElement} canvas  output canvas
+         * @param {number} intensity  0..1
+         */
+        /**
+         * Decide whether the active camera should be horizontally mirrored.
+         *
+         * Rule: ONLY the front-facing (selfie) camera is mirrored. Back camera,
+         * external USB cameras, and desktop webcams that report no facingMode
+         * are shown as-is.
+         *
+         *   - facingMode === 'user'         → mirror (selfie)
+         *   - facingMode === 'environment'  → no mirror (back cam)
+         *   - facingMode undefined          → no mirror (desktop/external)
+         *
+         * Prefers the live track settings over the cached state variable so it
+         * stays correct even right after a stream swap.
+         */
+        function shouldMirrorSelfie() {
+            if (localStream) {
+                const track = localStream.getVideoTracks?.()[0];
+                const settings = track?.getSettings?.();
+                if (settings && settings.facingMode) {
+                    return settings.facingMode === 'user';
+                }
+            }
+            return currentFacingMode === 'user';
+        }
+
+        function applyBeautyFilter(video, canvas, intensity) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Reset state
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1;
+            ctx.filter = 'none';
+            ctx.clearRect(0, 0, w, h);
+
+            // Mirror ONLY for the selfie camera. Back camera captures
+            // the scene as the sensor sees it (no flip).
+            const mirror = shouldMirrorSelfie();
+            if (mirror) {
+                ctx.save();
+                ctx.translate(w, 0);
+                ctx.scale(-1, 1);
+            }
+
+            // Pass 1 — Sharp base
+            ctx.filter = 'none';
+            ctx.drawImage(video, 0, 0, w, h);
+
+            if (intensity > 0) {
+                // Pass 2 — Soft-light blend with blurred + lightened overlay (skin smoothing)
+                const blurAmount = 1.2 + intensity * 3.2;          // 1.2px → 4.4px
+                const overlayAlpha = 0.30 + intensity * 0.35;      // 0.30 → 0.65
+                ctx.filter = `blur(${blurAmount}px) brightness(${1 + intensity * 0.14}) saturate(${1 + intensity * 0.08})`;
+                ctx.globalCompositeOperation = 'soft-light';
+                ctx.globalAlpha = overlayAlpha;
+                ctx.drawImage(video, 0, 0, w, h);
+
+                // Pass 3 — Final fresh glow
+                ctx.filter = `brightness(${1 + intensity * 0.05}) saturate(${1 + intensity * 0.06})`;
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.globalAlpha = 0.45;
+                ctx.drawImage(video, 0, 0, w, h);
+            }
+
+            if (mirror) {
+                ctx.restore();
+            }
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1;
+            ctx.filter = 'none';
+        }
+
+        /**
+         * Capture photo with beauty filter baked into the JPEG.
+         */
+        function snapPhoto() {
+            const video = document.getElementById('webcam-feed');
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            const intensity = beautyEnabled ? beautyIntensity : 0;
+            applyBeautyFilter(video, canvas, intensity);
+            
+            base64Image = canvas.toDataURL('image/jpeg', 0.88);
+            previewImg.src = base64Image;
+            
+            stopCameraStream();
+            document.getElementById('camera-placeholder').classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+        }
+
+        // ====== NEW: Beauty Filter UI Handlers ======
+
+        function onBeautyToggle(enabled) {
+            beautyEnabled = enabled;
+            const dot = document.getElementById('beauty-status-dot');
+            const panel = document.getElementById('beauty-filter-panel');
+            
+            if (enabled) {
+                dot.style.display = 'block';
+                panel.classList.remove('opacity-60');
+                document.querySelectorAll('.preset-chip').forEach(c => c.style.pointerEvents = '');
+            } else {
+                dot.style.display = 'none';
+                panel.classList.add('opacity-60');
+                document.querySelectorAll('.preset-chip').forEach(c => c.style.pointerEvents = 'none');
+            }
+            applyBeautyPreviewFilter();
+        }
+
+        function setBeautyPreset(preset) {
+            currentPreset = preset;
+            const intensityMap = {
+                natural: 30,   // light smoothing
+                smooth:  55,   // medium smoothing + brighten
+                glow:    80,   // strong smoothing + glow
+                hd:      95    // max — heavy retouch
             };
+            beautyIntensity = (intensityMap[preset] ?? 50) / 100;
 
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          localStream = stream;
-          if (video) video.srcObject = stream;
-          applyBeautyPreviewFilter();
+            // Update active chip
+            document.querySelectorAll('.preset-chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.preset === preset);
+            });
 
-          // Update facingMode hint from the actual stream settings (helps mobile flip)
-          const trackSettings = stream.getVideoTracks()[0].getSettings();
-          if (trackSettings?.facingMode) {
-            currentFacingMode = trackSettings.facingMode;
-          }
-        } catch (err) {
-          console.warn("Camera switch failed:", err);
-          showToastError("ບໍ່ສາມາດສະຫຼັບກ້ອງໄດ້. ກະລຸນາລອງໃໝ່.");
-          // Best-effort: roll back to whatever camera was open before
-          if (localStream === null) {
-            document
-              .getElementById("camera-stream-container")
-              .classList.add("hidden");
-            document
-              .getElementById("camera-placeholder")
-              .classList.remove("hidden");
-          }
-        }
-      }
+            // Auto-enable if user picks a preset while disabled
+            if (!beautyEnabled) {
+                beautyEnabled = true;
+                document.getElementById('beauty-toggle').checked = true;
+                onBeautyToggle(true);
+            }
 
-      function stopCameraStream() {
-        if (localStream) {
-          localStream.getTracks().forEach((track) => track.stop());
-          localStream = null;
-        }
-        const video = document.getElementById("webcam-feed");
-        if (video) video.srcObject = null;
-        document
-          .getElementById("camera-stream-container")
-          .classList.add("hidden");
-        document
-          .getElementById("camera-placeholder")
-          .classList.remove("hidden");
-      }
-
-      /**
-       * NEW: Real-time CSS beauty preview on the live <video> element.
-       * Subtle so the live view doesn't look weird, while the captured
-       * snapshot gets the heavier canvas-based treatment.
-       */
-      function applyBeautyPreviewFilter() {
-        const video = document.getElementById("webcam-feed");
-        const badge = document.getElementById("beauty-badge");
-        if (!video) return;
-
-        if (beautyEnabled && beautyIntensity > 0) {
-          const i = beautyIntensity;
-          // soft, perceptible glow during preview
-          video.style.filter =
-            `brightness(${1 + i * 0.1}) ` +
-            `contrast(${1 + i * 0.05}) ` +
-            `saturate(${1 + i * 0.12})`;
-          if (badge) badge.classList.remove("hidden-badge");
-        } else {
-          video.style.filter = "none";
-          if (badge) badge.classList.add("hidden-badge");
-        }
-      }
-
-      /**
-       * NEW: Multi-pass canvas beauty filter applied to the captured photo.
-       *
-       * Pipeline (when intensity > 0):
-       *   1. Draw the sharp mirrored (selfie) base.
-       *   2. Overlay a blurred+lightened copy using 'soft-light' blend mode —
-       *      this is the classic "skin smoothing" trick: blur hides pores/blemishes
-       *      while soft-light preserves overall contrast and color.
-       *   3. Add a subtle brightness+saturate "glow" pass for that fresh, dewy look.
-       *
-       * @param {HTMLVideoElement} video
-       * @param {HTMLCanvasElement} canvas  output canvas
-       * @param {number} intensity  0..1
-       */
-      function applyBeautyFilter(video, canvas, intensity) {
-        const ctx = canvas.getContext("2d");
-        const w = canvas.width;
-        const h = canvas.height;
-
-        // Reset state
-        ctx.globalCompositeOperation = "source-over";
-        ctx.globalAlpha = 1;
-        ctx.filter = "none";
-        ctx.clearRect(0, 0, w, h);
-
-        // Mirror for selfie view
-        ctx.save();
-        ctx.translate(w, 0);
-        ctx.scale(-1, 1);
-
-        // Pass 1 — Sharp base
-        ctx.filter = "none";
-        ctx.drawImage(video, 0, 0, w, h);
-
-        if (intensity > 0) {
-          // Pass 2 — Soft-light blend with blurred + lightened overlay (skin smoothing)
-          const blurAmount = 1.2 + intensity * 3.2; // 1.2px → 4.4px
-          const overlayAlpha = 0.3 + intensity * 0.35; // 0.30 → 0.65
-          ctx.filter = `blur(${blurAmount}px) brightness(${1 + intensity * 0.14}) saturate(${1 + intensity * 0.08})`;
-          ctx.globalCompositeOperation = "soft-light";
-          ctx.globalAlpha = overlayAlpha;
-          ctx.drawImage(video, 0, 0, w, h);
-
-          // Pass 3 — Final fresh glow
-          ctx.filter = `brightness(${1 + intensity * 0.05}) saturate(${1 + intensity * 0.06})`;
-          ctx.globalCompositeOperation = "source-over";
-          ctx.globalAlpha = 0.45;
-          ctx.drawImage(video, 0, 0, w, h);
+            applyBeautyPreviewFilter();
         }
 
-        ctx.restore();
-        ctx.globalCompositeOperation = "source-over";
-        ctx.globalAlpha = 1;
-        ctx.filter = "none";
-      }
+        function generateSimulatedSelfie() {
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            const placeholder = document.getElementById('camera-placeholder');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+            
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#1191d6');
+            gradient.addColorStop(1, '#0c6fa4');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(320, 200, 75, 0, Math.PI * 2);
+            ctx.fill();
 
-      /**
-       * Capture photo with beauty filter baked into the JPEG.
-       */
-      function snapPhoto() {
-        const video = document.getElementById("webcam-feed");
-        const previewContainer = document.getElementById(
-          "image-preview-container",
-        );
-        const previewImg = document.getElementById("image-preview");
+            ctx.beginPath();
+            ctx.ellipse(320, 395, 165, 115, 0, 0, Math.PI, true);
+            ctx.fill();
 
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 24px Noto Sans Lao, sans-serif';
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText('ຮູບຈຳລອງການເຂົ້າວຽກ', 320, 425);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '15px monospace';
+            ctx.fillText(new Date().toISOString(), 320, 452);
 
-        const intensity = beautyEnabled ? beautyIntensity : 0;
-        applyBeautyFilter(video, canvas, intensity);
-
-        base64Image = canvas.toDataURL("image/jpeg", 0.88);
-        previewImg.src = base64Image;
-
-        stopCameraStream();
-        document.getElementById("camera-placeholder").classList.add("hidden");
-        previewContainer.classList.remove("hidden");
-      }
-
-      // ====== NEW: Beauty Filter UI Handlers ======
-
-      function onBeautyToggle(enabled) {
-        beautyEnabled = enabled;
-        const dot = document.getElementById("beauty-status-dot");
-        const panel = document.getElementById("beauty-filter-panel");
-
-        if (enabled) {
-          dot.style.display = "block";
-          panel.classList.remove("opacity-60");
-          document
-            .querySelectorAll(".preset-chip")
-            .forEach((c) => (c.style.pointerEvents = ""));
-        } else {
-          dot.style.display = "none";
-          panel.classList.add("opacity-60");
-          document
-            .querySelectorAll(".preset-chip")
-            .forEach((c) => (c.style.pointerEvents = "none"));
-        }
-        applyBeautyPreviewFilter();
-      }
-
-      function setBeautyPreset(preset) {
-        currentPreset = preset;
-        const intensityMap = {
-          natural: 30, // light smoothing
-          smooth: 55, // medium smoothing + brighten
-          glow: 80, // strong smoothing + glow
-          hd: 95, // max — heavy retouch
-        };
-        beautyIntensity = (intensityMap[preset] ?? 50) / 100;
-
-        // Update active chip
-        document.querySelectorAll(".preset-chip").forEach((c) => {
-          c.classList.toggle("active", c.dataset.preset === preset);
-        });
-
-        // Auto-enable if user picks a preset while disabled
-        if (!beautyEnabled) {
-          beautyEnabled = true;
-          document.getElementById("beauty-toggle").checked = true;
-          onBeautyToggle(true);
+            base64Image = canvas.toDataURL('image/jpeg');
+            previewImg.src = base64Image;
+            
+            placeholder.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
         }
 
-        applyBeautyPreviewFilter();
-      }
-
-      function generateSimulatedSelfie() {
-        const previewContainer = document.getElementById(
-          "image-preview-container",
-        );
-        const previewImg = document.getElementById("image-preview");
-        const placeholder = document.getElementById("camera-placeholder");
-
-        const canvas = document.createElement("canvas");
-        canvas.width = 640;
-        canvas.height = 480;
-        const ctx = canvas.getContext("2d");
-
-        const gradient = ctx.createLinearGradient(
-          0,
-          0,
-          canvas.width,
-          canvas.height,
-        );
-        gradient.addColorStop(0, "#1191d6");
-        gradient.addColorStop(1, "#0c6fa4");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-        ctx.beginPath();
-        ctx.arc(320, 200, 75, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.ellipse(320, 395, 165, 115, 0, 0, Math.PI, true);
-        ctx.fill();
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 24px Noto Sans Lao, sans-serif";
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        ctx.fillText("ຮູບຈຳລອງການເຂົ້າວຽກ", 320, 425);
-
-        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        ctx.font = "15px monospace";
-        ctx.fillText(new Date().toISOString(), 320, 452);
-
-        base64Image = canvas.toDataURL("image/jpeg");
-        previewImg.src = base64Image;
-
-        placeholder.classList.add("hidden");
-        previewContainer.classList.remove("hidden");
-      }
-
-      function resetCaptureModule() {
-        base64Image = null;
-        document.getElementById("image-preview").src = "";
-        document
-          .getElementById("image-preview-container")
-          .classList.add("hidden");
-        document
-          .getElementById("camera-placeholder")
-          .classList.remove("hidden");
-      }
-
-      function updateCharCounter() {
-        const textarea = document.getElementById("remarks");
-        const counter = document.getElementById("char-counter");
-        const currentLength = textarea.value.length;
-        counter.textContent = `${currentLength} / 120 ຕົວອັກສອນ`;
-      }
-
-      async function handleFormSubmission(event) {
-        event.preventDefault();
-
-        const spinner = document.getElementById("global-spinner");
-        const spinnerTxt = document.getElementById("spinner-text");
-
-        if (!selectedEmployee) {
-          showToastError("ກະລຸນາເລືອກຊື່ພະນັກງານຂອງທ່ານກ່ອນສົ່ງຂໍ້ມູນ.");
-          return;
+        function resetCaptureModule() {
+            base64Image = null;
+            document.getElementById('image-preview').src = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('camera-placeholder').classList.remove('hidden');
         }
 
-        if (!base64Image) {
-          showToastError("ກະລຸນາຖ່າຍຮູບເຂົ້າວຽກເພື່ອດຳເນີນການຕໍ່.");
-          return;
+        function updateCharCounter() {
+            const textarea = document.getElementById('remarks');
+            const counter = document.getElementById('char-counter');
+            const currentLength = textarea.value.length;
+            counter.textContent = `${currentLength} / 120 ຕົວອັກສອນ`;
         }
 
-        // Sandbox Demo Scenario Intercept
-        if (isDemoMode) {
-          spinnerTxt.textContent = "ກຳລັງປະມວນຜົນການສົ່ງແບບຈຳລອງ...";
-          spinner.classList.remove("hidden");
-
-          setTimeout(() => {
-            spinner.classList.add("hidden");
-            document.getElementById("success-welcome-msg").textContent =
-              `ຍິນດີຕ້ອນຮັບ, ${selectedEmployee.emp_name}! (ບັນທຶກຂໍ້ມູນການເຂົ້າວຽກໃນໂໝດຈຳລອງສຳເລັດແລ້ວ)`;
-            showSuccessModal();
-            resetFormEntirely();
-          }, 1200);
-          return;
+        async function handleFormSubmission(event) {
+            event.preventDefault();
+            
+            const spinner = document.getElementById('global-spinner');
+            const spinnerTxt = document.getElementById('spinner-text');
+            
+            if (!selectedEmployee) {
+                showToastError("ກະລຸນາເລືອກຊື່ພະນັກງານຂອງທ່ານກ່ອນສົ່ງຂໍ້ມູນ.");
+                return;
+            }
+            
+            if (!base64Image) {
+                showToastError("ກະລຸນາຖ່າຍຮູບເຂົ້າວຽກເພື່ອດຳເນີນການຕໍ່.");
+                return;
+            }
+            
+            // Sandbox Demo Scenario Intercept
+            if (isDemoMode) {
+                spinnerTxt.textContent = "ກຳລັງປະມວນຜົນການສົ່ງແບບຈຳລອງ...";
+                spinner.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    spinner.classList.add('hidden');
+                    document.getElementById('success-welcome-msg').textContent = `ຍິນດີຕ້ອນຮັບ, ${selectedEmployee.emp_name}! (ບັນທຶກຂໍ້ມູນການເຂົ້າວຽກໃນໂໝດຈຳລອງສຳເລັດແລ້ວ)`;
+                    showSuccessModal();
+                    resetFormEntirely();
+                }, 1200);
+                return;
+            }
+            
+            // Real Sheets Integration Service Dispatch
+            const payload = {
+                action: 'submitArrivalLog',
+                emp_id: selectedEmployee.emp_id,
+                attached_image: base64Image,
+                remarks: document.getElementById('remarks').value.trim()
+            };
+            
+            spinnerTxt.textContent = "ກຳລັງບັນທຶກຂໍ້ມູນລົງໃນ Google Sheets...";
+            spinner.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(CONFIG_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                spinner.classList.add('hidden');
+                
+                if (result.status === 'success') {
+                    document.getElementById('success-welcome-msg').textContent = `ຍິນດີຕ້ອນຮັບ, ${result.employee_name}! ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ປອດໄພ!`;
+                    showSuccessModal();
+                    resetFormEntirely();
+                } else {
+                    showToastError(result.message || "ເກີດຂໍ້ຜິດພາດໃນການຕັ້ງຄ່າຖານຂໍ້ມູນ.");
+                }
+            } catch (err) {
+                spinner.classList.add('hidden');
+                console.error("Transmission Error: ", err);
+                showToastError("ການເຊື່ອມຕໍ່ຖານຂໍ້ມູນຫຼົ້ມເຫຼວ. ກະລຸນາກວດສອບສິດໃນ Apps Script ຄືນໃໝ່.");
+            }
         }
 
-        // Real Sheets Integration Service Dispatch
-        const payload = {
-          action: "submitArrivalLog",
-          emp_id: selectedEmployee.emp_id,
-          attached_image: base64Image,
-          remarks: document.getElementById("remarks").value.trim(),
-        };
-
-        spinnerTxt.textContent = "ກຳລັງບັນທຶກຂໍ້ມູນ...";
-        spinner.classList.remove("hidden");
-
-        try {
-          const response = await fetch(CONFIG_APPS_SCRIPT_URL, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "text/plain",
-            },
-            body: JSON.stringify(payload),
-          });
-
-          const result = await response.json();
-          spinner.classList.add("hidden");
-
-          if (result.status === "success") {
-            document.getElementById("success-welcome-msg").textContent =
-              `ຍິນດີຕ້ອນຮັບ, ${result.employee_name}! ຂໍໃຫ້ເປັນມື້ເຮັດວຽກທີ່ດີ ແລະ ປອດໄພ!`;
-            showSuccessModal();
-            resetFormEntirely();
-          } else {
-            showToastError(
-              result.message || "ເກີດຂໍ້ຜິດພາດໃນການຕັ້ງຄ່າຖານຂໍ້ມູນ.",
-            );
-          }
-        } catch (err) {
-          spinner.classList.add("hidden");
-          console.error("Transmission Error: ", err);
-          showToastError(
-            "ການເຊື່ອມຕໍ່ຖານຂໍ້ມູນຫຼົ້ມເຫຼວ. ກະລຸນາກວດສອບສິດໃນ Apps Script ຄືນໃໝ່.",
-          );
+        function resetFormEntirely() {
+            document.getElementById('checkin-form').reset();
+            resetEmployeeProfile();
+            resetCaptureModule();
+            document.getElementById('emp-search-input').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            updateCharCounter();
         }
-      }
 
-      function resetFormEntirely() {
-        document.getElementById("checkin-form").reset();
-        resetEmployeeProfile();
-        resetCaptureModule();
-        document.getElementById("emp-search-input").value = "";
-        document.getElementById("clear-search").classList.add("hidden");
-        updateCharCounter();
-      }
+        function showSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('hidden');
+            modal.querySelector('div').classList.remove('scale-90');
+            modal.querySelector('div').classList.add('scale-100');
+        }
 
-      function showSuccessModal() {
-        const modal = document.getElementById("success-modal");
-        modal.classList.remove("hidden");
-        modal.querySelector("div").classList.remove("scale-90");
-        modal.querySelector("div").classList.add("scale-100");
-      }
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
 
-      function closeSuccessModal() {
-        document.getElementById("success-modal").classList.add("hidden");
-      }
+        function showToastError(message) {
+            const modal = document.getElementById('error-modal');
+            document.getElementById('error-modal-msg').textContent = message;
+            modal.classList.remove('hidden');
+        }
 
-      function showToastError(message) {
-        const modal = document.getElementById("error-modal");
-        document.getElementById("error-modal-msg").textContent = message;
-        modal.classList.remove("hidden");
-      }
-
-      function closeErrorModal() {
-        document.getElementById("error-modal").classList.add("hidden");
-      }
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.add('hidden');
+        }
     </script>
-  </body>
+</body>
 </html>
